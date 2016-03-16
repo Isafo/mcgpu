@@ -31,13 +31,13 @@ class DynamicMesh : public Mesh{
 
 	void createBuffers();
 
-	void DynamicMesh::genTableTex();
+	void genTableTex();
 
-	static GLuint voxelTex;
-	const int voxelRes = 256;
+	GLuint voxelTex;
+	const int voxelRes = 255;
 
-	static GLuint edgeTableTex;
-	static GLuint triTableTex;
+	GLuint edgeTableTex;
+	GLuint triTableTex;
 
 	GLuint singlePointvao;          // Vertex array object, the main handle for geometry
 

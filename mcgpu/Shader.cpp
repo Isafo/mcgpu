@@ -183,6 +183,11 @@ void Shader::createShader(const char *vertexFilePath, const char *fragmentFilePa
 	// create program object
 	GLuint program = glCreateProgram();
 
+	const char *captured[] = {
+		"vertexPosition",
+	};
+	glTransformFeedbackVaryings(program, 1, captured, GL_SEPARATE_ATTRIBS);
+
 	glAttachShader(program, vertexShader);
 	glAttachShader(program, geometryShader);
 	glAttachShader(program, fragmentShader);

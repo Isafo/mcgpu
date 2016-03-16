@@ -12,7 +12,7 @@ Octant::Octant() {
 
 }
 
-Octant::Octant(int _depth, Octant* _parent, float x, float y, float z, float _halfDim, bool _fill) {
+Octant::Octant(int _depth, Octant* _parent, float x, float y, float z, float _halfDim) {
 	parent = _parent;
 	depth = _depth;
 	pos[0] = { x }; pos[1] = { y }; pos[2] = { z };
@@ -72,14 +72,14 @@ void Octant::partition() {
 	//isoBool = false;
 
 	float d = halfDim / 2.0f;
-	child[0] = new Octant(depth + 1, this, pos[0] - d, pos[1] - d, pos[2] - d, d, isoBool);
-	child[1] = new Octant(depth + 1, this, pos[0] - d, pos[1] - d, pos[2] + d, d, isoBool);
-	child[2] = new Octant(depth + 1, this, pos[0] - d, pos[1] + d, pos[2] - d, d, isoBool);
-	child[3] = new Octant(depth + 1, this, pos[0] - d, pos[1] + d, pos[2] + d, d, isoBool);
-	child[4] = new Octant(depth + 1, this, pos[0] + d, pos[1] - d, pos[2] - d, d, isoBool);
-	child[5] = new Octant(depth + 1, this, pos[0] + d, pos[1] - d, pos[2] + d, d, isoBool);
-	child[6] = new Octant(depth + 1, this, pos[0] + d, pos[1] + d, pos[2] - d, d, isoBool);
-	child[7] = new Octant(depth + 1, this, pos[0] + d, pos[1] + d, pos[2] + d, d, isoBool);
+	child[0] = new Octant(depth + 1, this, pos[0] - d, pos[1] - d, pos[2] - d, d);
+	child[1] = new Octant(depth + 1, this, pos[0] - d, pos[1] - d, pos[2] + d, d);
+	child[2] = new Octant(depth + 1, this, pos[0] - d, pos[1] + d, pos[2] - d, d);
+	child[3] = new Octant(depth + 1, this, pos[0] - d, pos[1] + d, pos[2] + d, d);
+	child[4] = new Octant(depth + 1, this, pos[0] + d, pos[1] - d, pos[2] - d, d);
+	child[5] = new Octant(depth + 1, this, pos[0] + d, pos[1] - d, pos[2] + d, d);
+	child[6] = new Octant(depth + 1, this, pos[0] + d, pos[1] + d, pos[2] - d, d);
+	child[7] = new Octant(depth + 1, this, pos[0] + d, pos[1] + d, pos[2] + d, d);
 
 
 }
@@ -91,35 +91,10 @@ void Octant::collisionCheck() {
 
 //do NOT use on MAX_DEPTH octants
 void Octant::deAllocate(DynamicMesh* _mesh) {
-	scalarValue = child[0]->scalarValue;
-	isoBool = child[0]->isoBool;
 	for (int i = 0; i < 8; i++) {
 		// child has no children 
 		if (child[i]->child[0] == nullptr) {
-			// scalarValue is allocated
-			if (child[i]->triangles != nullptr) {
-				//delete triangle scalarValue
-				for (int j = 0; j < child[i]->tCount; j++){
-					_mesh->emptyTStack.push_back(child[i]->triangles[j]);
-				}
-				delete[] child[i]->triangles;
-				child[i]->tCount = 0;
-				child[i]->triangles = nullptr;
-				
-				//delete vertex scalarValue
-				if (child[i]->vertices[0] != -1){
-					_mesh->emptyVStack.push_back(child[i]->vertices[0]);
-					child[i]->vertices[0] = -1;
-				}
-				if (child[i]->vertices[1] != -1){
-					_mesh->emptyVStack.push_back(child[i]->vertices[1]);
-					child[i]->vertices[1] = -1;
-				}
-				if (child[i]->vertices[2] != -1){
-					_mesh->emptyVStack.push_back(child[i]->vertices[2]);
-					child[i]->vertices[2] = -1;
-				}
-			}
+			//TODO: do something?
 		}
 		// child has children
 		else {
@@ -138,8 +113,9 @@ void Octant::checkHomogeneity() {
 		if (child[i]->child[0] != nullptr)
 			return;
 	}
-	scalarValue = child[0]->scalarValue;
-	isoBool = child[0]->isoBool;
+	//TODO: replace with something?
+	//scalarValue = child[0]->scalarValue;
+	//isoBool = child[0]->isoBool;
 	for (int i = 0; i < 8; i++){
 		delete child[i];
 	}
@@ -157,8 +133,9 @@ void Octant::checkHomogeneity(std::vector<octantStackElement>& octStack) {
 		if (child[i]->child[0] != nullptr)
 			return;
 	}
-	scalarValue = child[0]->scalarValue;
-	isoBool = child[0]->isoBool;
+	//TODO: replace with something?
+	//scalarValue = child[0]->scalarValue;
+	//isoBool = child[0]->isoBool;
 	for (int i = 0; i < 8; i++){
 		delete child[i];
 	}

@@ -45,26 +45,28 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 		}
 	}
 	
-	// send scalar field as 3D texture to the GPU ---------------------
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_3D, _dm->voxelTex);
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, _dm->voxelRes, _dm->voxelRes, _dm->voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, _ot->voxelData);
-
+	
 	// generate marching cubes on the GPU ------------------------------
 	// bind mcShader
 	glUseProgram(mcShader.programID);
 
+	// send scalar field as 3D texture to the GPU ---------------------
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_3D, _dm->voxelTex);
+	//glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, _dm->voxelRes, _dm->voxelRes, _dm->voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, _ot->voxelData);
+	//std::cout << "hej";
+
 	// bind textures
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, _dm->triTableTex);
-	glActiveTexture(GL_TEXTURE2);
-	glBindTexture(GL_TEXTURE_2D, _dm->edgeTableTex);
+	/*glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, _dm->edgeTableTex);*/
 	
 	// send uniforms
 	glUniform3fv(octantPos, 1, &_ot->pos[0]);
 	glUniform1i(volumeTex, 0);
 	glUniform1i(triTable, 1);
-	glUniform1i(edgeTable, 2);
+	//glUniform1i(edgeTable, 2);
 
 	//start rendering with transform feedback
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, _dm->vao);

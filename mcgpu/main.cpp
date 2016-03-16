@@ -1,3 +1,4 @@
+#pragma once
 #include "GLew\glew.h"
 
 #include "glfwContext.h"
@@ -5,6 +6,9 @@
 #include "MatrixStack.h"
 #include "Sphere.h"
 #include "Camera.h"
+#include "testGenerator.h"
+#include "DynamicMesh.h"
+#include "Octant.h"
 
 #include <glm/vec3.hpp> // glm::vec3
 #include <glm/vec4.hpp> // glm::vec4
@@ -45,14 +49,22 @@ int main(){
 
 	MatrixStack MVstack; MVstack.init();
 
+	Camera mCamera;
+	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, -1.0f));
+
 	Sphere testSphere(0.5f, 0.0f, -0.5f, 0.1f);
 	Sphere lightOne(0.5f, 0.5f, -2.0f, 0.1f);
 	//TODO: do this properly
 	glm::vec4 LP = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);// glm::vec4(lightOne.getPosition()[0], lightOne.getPosition()[1], lightOne.getPosition()[2], 1.0f);
 	glm::mat4 lightT = glm::mat4(1.0f);
 	
-	Camera mCamera;
-	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, -1.0f));
+	testGenerator firstTest;
+	DynamicMesh firstMesh;
+	Octant Octree;
+
+	firstMesh.createBuffers();
+	firstMesh.genTableTex();
+	firstTest.generate(&Octree, &firstMesh);
 
 	while (!glfwWindowShouldClose(currentWindow))
 	{
@@ -82,12 +94,20 @@ int main(){
 				lightOne.render();
 			MVstack.pop(); //light transforms >--
 
+			//MVstack.push();//sphere transforms --<
+			//	MVstack.multiply(testSphere.getTransformM());
+			////	MVstack.translate(testSphere.getPositionV());
+			//	glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
+			//	//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
+			//	testSphere.render();
+			//MVstack.pop(); //sphere transforms >--
+
 			MVstack.push();//sphere transforms --<
-				MVstack.multiply(testSphere.getTransformM());
-			//	MVstack.translate(testSphere.getPositionV());
+				MVstack.multiply(firstMesh.getOrientation());
+				MVstack.translate(firstMesh.getPosition());
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
 				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
-				testSphere.render();
+				firstMesh.render();
 			MVstack.pop(); //sphere transforms >--
 
 		MVstack.pop(); //Camera transforms >--
