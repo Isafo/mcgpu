@@ -51,7 +51,7 @@ public:
 
 	unsigned int vBufferIndex;
 	unsigned int tBufferIndex;
-	unsigned char*** voxelData;
+	unsigned char* voxelData;
 
 private:
 	

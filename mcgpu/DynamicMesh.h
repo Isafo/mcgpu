@@ -34,7 +34,7 @@ class DynamicMesh : public Mesh{
 	void genTableTex();
 
 	GLuint voxelTex;
-	const int voxelRes = 255;
+	const int voxelRes = 16;
 
 	GLuint edgeTableTex;
 	GLuint triTableTex;

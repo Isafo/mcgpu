@@ -26,6 +26,13 @@ float* MatrixStack::getCurrentMatrix() {
         return NULL;
 };
 
+glm::mat4* MatrixStack::getCurrentMatrixM() {
+	if (currentMatrix)
+		return &currentMatrix->m;
+	else
+		return NULL;
+};
+
 // Set the topmost (current) matrix to the identity matrix
 // and make it the only element on the stack.
 // This should be used with caution.

@@ -12,7 +12,7 @@ const uint isoValue = 128;
 out vec4 vertexPosition;
 
 const float stepLength = 0.5f;
-const uint dim = 255;
+const uint dim = 16;
 vec3 scale;
 
 vec4 lerp(vec3 first, vec3 second, float firstI, float secondI) {
@@ -32,11 +32,11 @@ void main() {
 	xyz[5] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, -stepLength );
 	xyz[6] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, stepLength );
 	xyz[7] = gl_in[0].gl_Position.xyz + vec3(-stepLength, stepLength, stepLength );
-
+	
 	scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
-	scalarValue[0] = texture(scalarField, xyz[0] * scale).r;
+	scalarValue[0] = texture(scalarField, vec3(0.5, 0.5, 0.5)).r;
 	scalarValue[1] = texture(scalarField, xyz[1] * scale).r;
 	scalarValue[2] = texture(scalarField, xyz[2] * scale).r;
 	scalarValue[3] = texture(scalarField, xyz[3] * scale).r;
@@ -56,24 +56,35 @@ void main() {
 	cubeIndex += int(scalarValue[6] >= isoValue) * 64; 
 	cubeIndex += int(scalarValue[7] >= isoValue) * 128;
 
+	vertexPosition = vec4(scalarValue[0], scalarValue[1], scalarValue[2], 1.0);
+	gl_Position = vertexPosition;
+	EmitVertex();
+	vertexPosition = vec4(scalarValue[3], scalarValue[4], scalarValue[5],  1.0);
+	gl_Position = vertexPosition;
+	EmitVertex();
+	vertexPosition = vec4(scalarValue[6], scalarValue[7], cubeIndex, 1.0);
+	gl_Position = vertexPosition;
+	EmitVertex();
+	EndPrimitive();
+
+	/*
+
 	vec4 edgeVert[12];
 
-	edgeVert[0] = lerp(xyz[0], xyz[1], scalarValue[0], scalarValue[1]);
-	edgeVert[1] = lerp(xyz[1], xyz[2], scalarValue[1], scalarValue[2]);
-	edgeVert[2] = lerp(xyz[2], xyz[3], scalarValue[2], scalarValue[3]);
-	edgeVert[3] = lerp(xyz[3], xyz[0], scalarValue[3], scalarValue[0]);
+	edgeVert[0] = lerp(xyz[0] * scale, xyz[1] * scale, scalarValue[0], scalarValue[1]);
+	edgeVert[1] = lerp(xyz[1] * scale, xyz[2] * scale, scalarValue[1], scalarValue[2]);
+	edgeVert[2] = lerp(xyz[2] * scale, xyz[3] * scale, scalarValue[2], scalarValue[3]);
+	edgeVert[3] = lerp(xyz[3] * scale, xyz[0] * scale, scalarValue[3], scalarValue[0]);
 
-	edgeVert[4] = lerp(xyz[4], xyz[5], scalarValue[4], scalarValue[5]);
-	edgeVert[5] = lerp(xyz[5], xyz[6], scalarValue[5], scalarValue[6]);
-	edgeVert[6] = lerp(xyz[6], xyz[7], scalarValue[6], scalarValue[7]);
-	edgeVert[7] = lerp(xyz[7], xyz[4], scalarValue[7], scalarValue[4]);
+	edgeVert[4] = lerp(xyz[4] * scale, xyz[5] * scale, scalarValue[4], scalarValue[5]);
+	edgeVert[5] = lerp(xyz[5] * scale, xyz[6] * scale, scalarValue[5], scalarValue[6]);
+	edgeVert[6] = lerp(xyz[6] * scale, xyz[7] * scale, scalarValue[6], scalarValue[7]);
+	edgeVert[7] = lerp(xyz[7] * scale, xyz[4] * scale, scalarValue[7], scalarValue[4]);
 
-	edgeVert[8] = lerp(xyz[0], xyz[4], scalarValue[0], scalarValue[4]);
-	edgeVert[9] = lerp(xyz[1], xyz[5], scalarValue[1], scalarValue[5]);
-	edgeVert[10] = lerp(xyz[2], xyz[6], scalarValue[2], scalarValue[6]);
-	edgeVert[11] = lerp(xyz[3], xyz[7], scalarValue[3], scalarValue[7]);
-
-	
+	edgeVert[8] = lerp(xyz[0] * scale, xyz[4] * scale, scalarValue[0], scalarValue[4]);
+	edgeVert[9] = lerp(xyz[1] * scale, xyz[5] * scale, scalarValue[1], scalarValue[5]);
+	edgeVert[10] = lerp(xyz[2] * scale, xyz[6] * scale, scalarValue[2], scalarValue[6]);
+	edgeVert[11] = lerp(xyz[3] * scale, xyz[7] * scale, scalarValue[3], scalarValue[7]);
 	
 	// Issue triangles
 	int i = 0;
@@ -97,5 +108,5 @@ void main() {
 		EndPrimitive();
 		i += 3;
 	}
-
+	*/
 }

@@ -27,6 +27,7 @@ public:
 
     // Get the pointer to the topmost (current) matrix array
     float* getCurrentMatrix();
+	glm::mat4* getCurrentMatrixM();
 
     // Set the topmost (current) matrix to the identity matrix
     void init();

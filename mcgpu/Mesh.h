@@ -32,13 +32,15 @@ public:
 	void getOrientation(float* mat);
 
 
-	void setPosition(float* p) { position[0] = p[0]; position[1] = p[1]; position[2] = p[2]; }
+	void setPosition(glm::vec3* p) { position = *p;}
 	//void setOrientation(float* o) { std::copy(o, o + 16, orientation); }
 
 	virtual void render() = 0;
 	virtual void createBuffers() = 0;
 
 	GLuint vao; // Vertex array object, the main handle for geometry
+	GLuint vertexbuffer; // Buffer ID to bind to GL_ARRAY_BUFFER
+	GLuint indexbuffer;  // Buffer ID to bind to GL_ELEMENT_ARRAY_BUFFER
 
 
 protected:
@@ -54,7 +56,6 @@ protected:
 	glm::vec3 position;
 	glm::mat4 orientation;
 
-	GLuint vertexbuffer; // Buffer ID to bind to GL_ARRAY_BUFFER
-	GLuint indexbuffer;  // Buffer ID to bind to GL_ELEMENT_ARRAY_BUFFER
+
 };
 

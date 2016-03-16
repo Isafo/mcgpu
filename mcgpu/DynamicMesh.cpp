@@ -26,9 +26,6 @@ DynamicMesh::DynamicMesh() {
 
 	emptyVStack.reserve(100);
 	emptyTStack.reserve(100);
-
-
-
 }
 
 DynamicMesh::~DynamicMesh(void) {
@@ -436,34 +433,21 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 16, 256, 0, GL_ALPHA_INTEGER, GL_INT, triTable);
 
-	/*unsigned char*** voxelData;
-	voxelData = new unsigned char**[voxelRes];
+	unsigned char* voxelData = new unsigned char[voxelRes*voxelRes*voxelRes];
 
-	for (int i = 0; i < voxelRes; ++i){
-		voxelData[i] = new unsigned char*[voxelRes];
-	}
-
-	for (int i = 0; i < voxelRes; ++i)
-		for (int j = 0; j < voxelRes; ++j){
-		voxelData[i][j] = new unsigned char[voxelRes];
-		}
 
 	for (int x = 0; x < voxelRes; ++x){
 		for (int y = 0; y < voxelRes; ++y){
 			for (int z = 0; z < voxelRes; ++z){
 				if ((x > 75 && x < 200) && (y > 75 && y < 200) && (z > 75 && z < 200))
-					voxelData[x][y][z] = 255;
+					voxelData[x + voxelRes*(y + voxelRes*z)] = 255;
 				else
-					voxelData[x][y][z] = 0;
+					voxelData[x + voxelRes*(y + voxelRes*z)] = 0;
 			}
 		}
-	}*/
-	unsigned char* voxelData;
-	voxelData = new unsigned char[voxelRes*voxelRes * voxelRes];
-	for (int i = 0; i < voxelRes * voxelRes * voxelRes; ++i)
-		voxelData[i] = 0;
+	}
 
-
+	glEnable(GL_TEXTURE_3D);
 	glActiveTexture(GL_TEXTURE0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &voxelTex);
@@ -474,16 +458,14 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, voxelRes, voxelRes, voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, voxelData);
-
-	
 	//glBindTexture(NULL, 0);
 }
 
 
 void DynamicMesh::render() {
 	glBindVertexArray(vao);
-
-	glDrawElements(GL_TRIANGLES, triangleCap * sizeof(triangle), GL_UNSIGNED_INT, (void*)0);
+	glDrawArrays(GL_TRIANGLE_STRIP, 0, 100);
+	//glDrawElements(GL_TRIANGLES, 1000 * sizeof(triangle), GL_UNSIGNED_INT, (void*)0);
 	// (mode, vertex uN, type, element array buffer offset)
 	glBindVertexArray(0);
 }
