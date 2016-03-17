@@ -42,12 +42,13 @@ public:
 	GLuint vertexbuffer; // Buffer ID to bind to GL_ARRAY_BUFFER
 	GLuint indexbuffer;  // Buffer ID to bind to GL_ELEMENT_ARRAY_BUFFER
 
+	int nrofVerts;
 
 protected:
 
 	//array that stres all vertices of the mesh
 	vertex** vertexArray;
-	int nrofVerts;
+	
 
 	//Array that stores all triangles of the mesh
 	triangle** triangleArray;

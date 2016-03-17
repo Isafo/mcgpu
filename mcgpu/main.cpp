@@ -32,6 +32,7 @@ int main(){
 	//glfw.init(640, 480, "mCity");
 	glfw.init(1920, 1080, "mCity");
 	glfw.getCurrentWindow(currentWindow);
+	glfwSetCursorPos(currentWindow, 960, 540);
 
 	//start GLEW extension handler
 	glewExperimental = GL_TRUE;
@@ -71,6 +72,7 @@ int main(){
 
 	Camera mCamera;
 	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, -4.0f));
+	mCamera.updateRot();
 
 
 	double lastTime = glfwGetTime() - 0.001;
@@ -82,7 +84,7 @@ int main(){
 
 		//glfw input handler
 		inputHandler(currentWindow, dT);
-		//cameraHandler(currentWindow, dT, &mCamera);
+		cameraHandler(currentWindow, dT, &mCamera);
 
 		GLcalls();
 
@@ -92,8 +94,9 @@ int main(){
 		MVstack.push();//Camera transforms --<
 			glUniformMatrix4fv(locationP, 1, GL_FALSE, mCamera.getPerspective());
 
+
 			//glm::transpose(cameraT);
-			MVstack.multiply(mCamera.getTransformM()); 
+			MVstack.multiply(mCamera.getTransformM());
 
 
 			glUniform3fv(locationLP, 1, &(*(MVstack.getCurrentMatrixM())*glm::vec4(*(lightOne.getPositionV()), 1.0f))[0]);
@@ -146,37 +149,48 @@ void cameraHandler(GLFWwindow* _window, double _dT, Camera* _cam)
 	glm::mat4* T = _cam->getTransformM();
 	glm::vec3* cDirection = _cam->getDirection();
 	glm::vec3 cRight = glm::vec3((*T)[0][0], (*T)[1][0], (*T)[2][0]);
-	glm::vec3 cUp = glm::vec3((*T)[0][1], (*T)[1][1], (*T)[2][1]);
+	glm::vec3* cUp = _cam->getUpDirection();
+	float movementSpeed = 0.0f;
+	
+	//*cDirection = glm::vec3((*T)[0][2], (*T)[1][2], (*T)[2][2]);
 
+	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT)){
+		movementSpeed = 10.0f;
+	}
+	else{
+		movementSpeed = 1.0f;
+	}
 	if (glfwGetKey(_window, GLFW_KEY_W)) {
-		translation = *cDirection*-0.5f*(float)_dT;
+		translation = *cDirection*movementSpeed*(float)_dT;
 		_cam->translate(&translation);
 	}
 	if (glfwGetKey(_window, GLFW_KEY_S)){
-		translation = *cDirection*0.5f*(float)_dT;
+		translation = *cDirection*-movementSpeed*(float)_dT;
 		_cam->translate(&translation);
 	}
 	if (glfwGetKey(_window, GLFW_KEY_A)) {
-		translation = cRight*0.5f*(float)_dT;
+		translation = cRight*-movementSpeed*(float)_dT;
 		_cam->translate(&translation);
 	}
 	if (glfwGetKey(_window, GLFW_KEY_D)) {
-		translation = cRight*-0.5f*(float)_dT;
+		translation = cRight*movementSpeed*(float)_dT;
 		_cam->translate(&translation);
 	}
 
 	double X, Y, dX, dY;
 	glfwGetCursorPos(_window, &X, &Y);
 
-	dX = (X - _cam->mouse.x) / 640.0;
-	dY = (Y - _cam->mouse.y) / 480.0;
+	//dX = (X - 960.0) / 1920.0;
+	_cam->yaw -= (X - 960.0) / 1920.0;
+	//dY = (Y - 540.0) / 1080.0;
+	_cam->pitch -= (Y - 540.0) / 1080.0;
 
-	_cam->mouse.x = X;
-	_cam->mouse.y = Y;
-
-	
 	//*cDirection = glm::rotate(*cDirection, (float)dY, cRight);
-	*cDirection = glm::rotateX(*cDirection, (float)dY); *cDirection = glm::rotateY(*cDirection, (float)dX);
+	//*cDirection = glm::rotateY(*cDirection, (float)dX);
+	//*cDirection = glm::rotateX(*cDirection, (float)dY);
+
+	//*cUp = glm::rotateY(*cUp, (float)dX);
+	//*cUp = glm::rotateX(*cUp, (float)dY);
 	//*cRight = glm::rotate(*cRight, (float)-dY, cUp);
 	//*cDirection = glm::rotate(*cDirection, (float)dX, cUp);
 
@@ -185,7 +199,7 @@ void cameraHandler(GLFWwindow* _window, double _dT, Camera* _cam)
 	//glm::rotate(*cDirection, (float)X, cUp);
 	//glm::rotate(*cDirection, (float)Y, *cRight);
 
-
+	glfwSetCursorPos(_window, 960, 540);
 }
 
 void GLcalls()

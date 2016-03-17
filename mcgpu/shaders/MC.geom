@@ -7,7 +7,7 @@ uniform sampler3D scalarField;
 uniform isampler2D triTable;
 //uniform isampler2D edgeTable;
 
-const uint isoValue = 128;
+const float isoValue = 0.5;
 
 out vec4 vertexPosition;
 
@@ -36,7 +36,8 @@ void main() {
 	scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
-	scalarValue[0] = texture(scalarField, vec3(0.5, 0.5, 0.5)).r;
+	//scalarValue[0] = texture(scalarField, vec3(0.5, 0.5, 0.5)).r;
+	scalarValue[0] = texture(scalarField, xyz[0] * scale).r;
 	scalarValue[1] = texture(scalarField, xyz[1] * scale).r;
 	scalarValue[2] = texture(scalarField, xyz[2] * scale).r;
 	scalarValue[3] = texture(scalarField, xyz[3] * scale).r;
@@ -56,6 +57,9 @@ void main() {
 	cubeIndex += int(scalarValue[6] >= isoValue) * 64; 
 	cubeIndex += int(scalarValue[7] >= isoValue) * 128;
 
+
+	/// bug test ----------------------------------------------
+	/*
 	vertexPosition = vec4(scalarValue[0], scalarValue[1], scalarValue[2], 1.0);
 	gl_Position = vertexPosition;
 	EmitVertex();
@@ -66,8 +70,9 @@ void main() {
 	gl_Position = vertexPosition;
 	EmitVertex();
 	EndPrimitive();
+	*/
+	// end of bug test ----------------------------------------
 
-	/*
 
 	vec4 edgeVert[12];
 
@@ -108,5 +113,4 @@ void main() {
 		EndPrimitive();
 		i += 3;
 	}
-	*/
 }

@@ -25,16 +25,17 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	_ot->voxelData = new unsigned char[_dm->voxelRes*_dm->voxelRes*_dm->voxelRes];
 
 
-	for (int x = 0; x < _dm->voxelRes; ++x){
-		for (int y = 0; y < _dm->voxelRes; ++y){
-			for (int z = 0; z < _dm->voxelRes; ++z){
-				if ((x > 75 && x < 200) && (y > 75 && y < 200) && (z > 75 && z < 200))
-					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
-				else
-					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
-			}
-		}
-	}
+	//for (int x = 0; x < _dm->voxelRes; ++x){
+	//	for (int y = 0; y < _dm->voxelRes; ++y){
+	//		for (int z = 0; z < _dm->voxelRes; ++z){
+	//			/*if ((x > _dm->voxelRes / 4 && x < (_dm->voxelRes * 3) / 4) && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
+	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
+	//			else
+	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;*/
+	//			_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
+	//		}
+	//	}
+	//}
 	
 	
 	// generate marching cubes on the GPU ------------------------------
@@ -42,16 +43,16 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glUseProgram(mcShader.programID);
 
 	
-
+	
 	// bind textures
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, _dm->triTableTex);
 	/*glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, _dm->edgeTableTex);*/
-	
 	// send scalar field as 3D texture to the GPU ---------------------
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, _dm->voxelTex);
+	
 	//glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, _dm->voxelRes, _dm->voxelRes, _dm->voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, _ot->voxelData);
 	//std::cout << "hej";
 
@@ -81,18 +82,20 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
 	GLuint nprimitives;
 	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);
+	_dm->nrofVerts = nprimitives;
 
-
-	GLfloat feedback[1000];
+	GLfloat feedback[4000];
 	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
-	for (int i = 0; i < 1000; i = i + 4 ) {
+	for (int i = 0; i < 4000; i = i + 4 ) {
 		std::cout << feedback[i] << ", " <<
-					 feedback[i + 1] << ", " << 
-					 feedback[i + 2] << ", " << 
-					 feedback[i + 3] << ", " << std::endl;
+			feedback[i + 1] << ", " <<
+			feedback[i + 2] << ", " <<
+			feedback[i + 3] << ", " << std::endl;
+			if (i % 12 == 0)
+				std::cout <<  "----------" << std::endl;
+		
 	}
-
-
+	
 	glBindVertexArray(0);
 
 }

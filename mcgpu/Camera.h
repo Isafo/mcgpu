@@ -11,6 +11,7 @@ public:
 	void getPosition(glm::vec3& _Position);
 	float* getPositionF();
 	glm::vec3* getDirection();
+	glm::vec3* getUpDirection();
 
 	float* getTransformF();
 	glm::mat4* getTransformM();
@@ -25,10 +26,16 @@ public:
 
 	void updateRot();
 
-	glm::vec2 mouse;
+	float pitch;
+	float yaw;
 
 private:
+	
+	glm::vec3 position;
+
 	glm::vec3 direction;
+	glm::vec3 upDirection;
+	glm::vec3 rightDirection;
 
 	glm::mat4 transform;
 	glm::mat4 perspective;
