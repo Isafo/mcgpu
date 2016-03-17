@@ -72,7 +72,7 @@ int main(){
 
 	Camera mCamera;
 	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, -4.0f));
-	mCamera.updateRot();
+	mCamera.update();
 
 
 	double lastTime = glfwGetTime() - 0.001;
@@ -194,7 +194,7 @@ void cameraHandler(GLFWwindow* _window, double _dT, Camera* _cam)
 	//*cRight = glm::rotate(*cRight, (float)-dY, cUp);
 	//*cDirection = glm::rotate(*cDirection, (float)dX, cUp);
 
-	_cam->updateRot();
+	_cam->update();
 
 	//glm::rotate(*cDirection, (float)X, cUp);
 	//glm::rotate(*cDirection, (float)Y, *cRight);

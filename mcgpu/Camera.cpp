@@ -92,12 +92,8 @@ void Camera::setPerspective(glm::mat4* _Perspective)
 	perspective = *_Perspective;
 }
 
-void Camera::updateRot()
+void Camera::update()
 {
-	glm::mat4 rot;
-	//glm::vec3 up = glm::cross(direction, glm::vec3(0.0f, 1.0f, 0.0f));
-	//glm::normalize(up);
-
 	direction = glm::vec3(cos(pitch)*sin(yaw),
 						  sin(pitch),
 						  cos(pitch)*cos(yaw));
@@ -110,13 +106,4 @@ void Camera::updateRot()
 	
 	glm::vec3 test = glm::vec3(transform[3]);
 	transform = glm::lookAt(position, position + direction, upDirection);
-
-	//float a = glm::dot(direction, glm::vec3(0.0f, 0.0f, -1.0f));
-	//rot = glm::rotate(rot, acos(a), upDirection);
-
-	//transform[0][0] = rot[0][0]; transform[0][1] = rot[0][1]; transform[0][2] = rot[0][2];
-	//transform[1][0] = rot[1][0]; transform[1][1] = rot[1][1]; transform[1][2] = rot[1][2];
-	//transform[2][0] = rot[2][0]; transform[2][1] = rot[2][1]; transform[2][2] = rot[2][2];
-
-
 }

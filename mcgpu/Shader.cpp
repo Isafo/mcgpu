@@ -185,8 +185,9 @@ void Shader::createShader(const char *vertexFilePath, const char *fragmentFilePa
 
 	const char *captured[] = {
 		"vertexPosition",
+		"vertexNormal",
 	};
-	glTransformFeedbackVaryings(program, 1, captured, GL_INTERLEAVED_ATTRIBS);
+	glTransformFeedbackVaryings(program, 2, captured, GL_INTERLEAVED_ATTRIBS);
 
 	glAttachShader(program, vertexShader);
 	glAttachShader(program, geometryShader);

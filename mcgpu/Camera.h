@@ -24,7 +24,7 @@ public:
 	void setTransform(glm::mat4* _Transform);
 	void setPerspective(glm::mat4* _Perspective);
 
-	void updateRot();
+	void update();
 
 	float pitch;
 	float yaw;

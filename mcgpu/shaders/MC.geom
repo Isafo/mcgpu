@@ -9,15 +9,17 @@ uniform isampler2D triTable;
 
 const float isoValue = 0.5;
 
-out vec4 vertexPosition;
+out vec3 vertexPosition;
+out vec3 vertexNormal;
 
 const float stepLength = 0.5f;
 const uint dim = 16;
 vec3 scale;
 
-vec4 lerp(vec3 first, vec3 second, float firstI, float secondI) {
+vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {
 	float dVal = (isoValue - firstI) / (secondI - firstI);
-	return vec4(first + dVal*(second - first), 1.0f);
+	//return vec4(first + dVal*(second - first), 1.0f);
+	return first + dVal*(second - first);
 }
 
 void main() {
@@ -57,24 +59,7 @@ void main() {
 	cubeIndex += int(scalarValue[6] >= isoValue) * 64; 
 	cubeIndex += int(scalarValue[7] >= isoValue) * 128;
 
-
-	/// bug test ----------------------------------------------
-	/*
-	vertexPosition = vec4(scalarValue[0], scalarValue[1], scalarValue[2], 1.0);
-	gl_Position = vertexPosition;
-	EmitVertex();
-	vertexPosition = vec4(scalarValue[3], scalarValue[4], scalarValue[5],  1.0);
-	gl_Position = vertexPosition;
-	EmitVertex();
-	vertexPosition = vec4(scalarValue[6], scalarValue[7], cubeIndex, 1.0);
-	gl_Position = vertexPosition;
-	EmitVertex();
-	EndPrimitive();
-	*/
-	// end of bug test ----------------------------------------
-
-
-	vec4 edgeVert[12];
+	vec3 edgeVert[12];
 
 	edgeVert[0] = lerp(xyz[0] * scale, xyz[1] * scale, scalarValue[0], scalarValue[1]);
 	edgeVert[1] = lerp(xyz[1] * scale, xyz[2] * scale, scalarValue[1], scalarValue[2]);
@@ -97,17 +82,20 @@ void main() {
 		int ti = texelFetch(triTable, ivec2(i, cubeIndex), 0).a;
 		if (ti == -1) break;
 		vertexPosition = edgeVert[ti];
-		gl_Position = vertexPosition;
+		vertexNormal = vec3(1.0, 1.0, 1.0);
+		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 
 		ti = texelFetch(triTable, ivec2(i + 1, cubeIndex), 0).a;
 		vertexPosition = edgeVert[ti];
-		gl_Position = vertexPosition;
+		vertexNormal = vec3(1.0, 1.0, 1.0);
+		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 
 		ti = texelFetch(triTable, ivec2(i + 2, cubeIndex), 0).a;
 		vertexPosition = edgeVert[ti];
-		gl_Position = vertexPosition;
+		vertexNormal = vec3(1.0, 1.0, 1.0);
+		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 
 		EndPrimitive();
