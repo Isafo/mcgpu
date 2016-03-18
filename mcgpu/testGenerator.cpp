@@ -83,7 +83,7 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 
 	glEnable(GL_RASTERIZER_DISCARD);
 	glBeginTransformFeedback(GL_TRIANGLES);
-	glDrawArraysInstanced(GL_POINTS, 0, 1, std::pow(_dm->voxelRes, 3));
+	glDrawArraysInstanced(GL_POINTS, 0, 1, std::pow(_dm->voxelRes - 2, 3));
 	glEndTransformFeedback();
 	glDisable(GL_RASTERIZER_DISCARD);
 
@@ -92,17 +92,17 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);
 	_dm->nrofVerts = nprimitives;
 
-	//GLfloat feedback[4000];
-	//glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
-	//for (int i = 0; i < 4000; i = i + 3 ) {
-	//	std::cout << feedback[i] << ", " <<
-	//		feedback[i + 1] << ", " <<
-	//		feedback[i + 2] << ", " << std::endl;
-	//		if (i % 9 == 0)
-	//			std::cout <<  "----------" << std::endl;
-	//	
-	//}
-	//
+	GLfloat feedback[5000];
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
+	for (int i = 0; i < 3*6*3; i = i + 3 ) {
+		std::cout << feedback[i] << ", " <<
+			feedback[i + 1] << ", " <<
+			feedback[i + 2] << ", " << std::endl;
+			if (i % 9 == 0)
+				std::cout <<  "----------" << std::endl;
+		
+	}
+	
 	glBindVertexArray(0);
 
 }

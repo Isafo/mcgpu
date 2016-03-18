@@ -34,6 +34,24 @@ void main() {
 	xyz[6] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, stepLength );
 	xyz[7] = gl_in[0].gl_Position.xyz + vec3(-stepLength, stepLength, stepLength );
 	
+	/* //DEGUG	
+	vertexPosition = gl_in[0].gl_Position.xyz;
+	vertexNormal = vec3(1,1,1);
+	gl_Position = vec4(vertexPosition, 1.0);
+	EmitVertex();
+		
+	vertexPosition = gl_in[0].gl_Position.xyz;
+	vertexNormal = vec3(1,1,1);
+	gl_Position = vec4(vertexPosition, 1.0);
+	EmitVertex();
+		
+	vertexPosition = gl_in[0].gl_Position.xyz;
+	vertexNormal = vec3(1,1,1);
+	gl_Position = vec4(vertexPosition, 1.0);
+	EmitVertex();
+	EndPrimitive();
+	*/
+
 	scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
@@ -88,26 +106,21 @@ void main() {
 		int ti2 = texelFetch(triTable, ivec2(i + 2, cubeIndex), 0).a;
 
 		vec3 triNormal =  cross(edgeVert[ti1] - edgeVert[ti], edgeVert[ti2] - edgeVert[ti]);
-		
+
 		vertexPosition = edgeVert[ti];
-		//vertexNormal = vec3(gl_InvocationID, 1.0, 1.0);
 		vertexNormal = triNormal;
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 		
 		vertexPosition = edgeVert[ti1];
-		//vertexNormal = vec3(gl_InvocationID, 1.0, 1.0);
 		vertexNormal = triNormal;
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 		
 		vertexPosition = edgeVert[ti2];
-		//vertexNormal = vec3(gl_InvocationID, 1.0, 1.0);
 		vertexNormal = triNormal;
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
-
-		gl_PrimitiveID = gl_PrimitiveIDIn;
 
 		EndPrimitive();
 		i += 3;
