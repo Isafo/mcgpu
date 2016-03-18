@@ -70,7 +70,7 @@ int main(){
 	firstMesh.createBuffers();
 	firstMesh.genTableTex();
 	firstTest.generate(&Octree, &firstMesh);
-	firstMesh.setPosition(&glm::vec3(0.0f, -50.0f, 0.0f));
+	firstMesh.setPosition(&glm::vec3(0.0f, -25.0f, 0.0f));
 
 	Camera mCamera;
 	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, 0.0f));
@@ -119,7 +119,7 @@ int main(){
 				//MVstack.multiply(testSphere1.getTransformM());
 				MVstack.multiply(firstMesh.getOrientation());
 				MVstack.translate(firstMesh.getPosition());
-				MVstack.scale(50.0f);
+				MVstack.scale(25.0f);
 
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
 				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
