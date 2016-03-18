@@ -2,6 +2,9 @@
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm\vec3.hpp>
 #include <glm\vec2.hpp>
+
+#include "GLFW/glfw3.h"
+
 class Camera
 {
 public:
@@ -25,6 +28,8 @@ public:
 	void setPerspective(glm::mat4* _Perspective);
 
 	void update();
+
+	void fpsCamera(GLFWwindow* _window, double _dT);
 
 	float pitch;
 	float yaw;

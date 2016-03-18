@@ -109,3 +109,43 @@ void Camera::update()
 	glm::vec3 test = glm::vec3(transform[3]);
 	transform = glm::lookAt(position, position + direction, upDirection);
 }
+
+void Camera::fpsCamera(GLFWwindow* _window, double _dT)
+{
+	double X, Y, dX, dY;
+	glfwGetCursorPos(_window, &X, &Y);
+
+	yaw -= (X - 960.0) / 1920.0;
+	pitch -= (Y - 540.0) / 1080.0;
+
+	this->update();
+
+	glm::vec3 translation;
+
+	float movementSpeed = 0.0f;
+
+	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT)){
+		movementSpeed = 10.0f;
+	}
+	else{
+		movementSpeed = 1.0f;
+	}
+	if (glfwGetKey(_window, GLFW_KEY_W)) {
+		translation = direction*movementSpeed*(float)_dT;
+		this->translate(&translation);
+	}
+	if (glfwGetKey(_window, GLFW_KEY_S)){
+		translation = direction*-movementSpeed*(float)_dT;
+		this->translate(&translation);
+	}
+	if (glfwGetKey(_window, GLFW_KEY_A)) {
+		translation = rightDirection*-movementSpeed*(float)_dT;
+		this->translate(&translation);
+	}
+	if (glfwGetKey(_window, GLFW_KEY_D)) {
+		translation = rightDirection*movementSpeed*(float)_dT;
+		this->translate(&translation);
+	}
+
+	glfwSetCursorPos(_window, 960, 540);
+}

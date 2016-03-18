@@ -86,7 +86,8 @@ int main(){
 
 		//glfw input handler
 		inputHandler(currentWindow, dT);
-		cameraHandler(currentWindow, dT, &mCamera);
+		//cameraHandler(currentWindow, dT, &mCamera);
+		mCamera.fpsCamera(currentWindow, dT);
 
 		GLcalls();
 
@@ -147,64 +148,6 @@ void inputHandler(GLFWwindow* _window, double _dT)
 		glfwSetWindowShouldClose(_window, GL_TRUE);
 	}
 	
-}
-void cameraHandler(GLFWwindow* _window, double _dT, Camera* _cam)
-{
-	glm::vec3 translation;
-	glm::mat4* T = _cam->getTransformM();
-	glm::vec3* cDirection = _cam->getDirection();
-	glm::vec3 cRight = glm::vec3((*T)[0][0], (*T)[1][0], (*T)[2][0]);
-	glm::vec3* cUp = _cam->getUpDirection();
-	float movementSpeed = 0.0f;
-	
-	//*cDirection = glm::vec3((*T)[0][2], (*T)[1][2], (*T)[2][2]);
-
-	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT)){
-		movementSpeed = 10.0f;
-	}
-	else{
-		movementSpeed = 1.0f;
-	}
-	if (glfwGetKey(_window, GLFW_KEY_W)) {
-		translation = *cDirection*movementSpeed*(float)_dT;
-		_cam->translate(&translation);
-	}
-	if (glfwGetKey(_window, GLFW_KEY_S)){
-		translation = *cDirection*-movementSpeed*(float)_dT;
-		_cam->translate(&translation);
-	}
-	if (glfwGetKey(_window, GLFW_KEY_A)) {
-		translation = cRight*-movementSpeed*(float)_dT;
-		_cam->translate(&translation);
-	}
-	if (glfwGetKey(_window, GLFW_KEY_D)) {
-		translation = cRight*movementSpeed*(float)_dT;
-		_cam->translate(&translation);
-	}
-
-	double X, Y, dX, dY;
-	glfwGetCursorPos(_window, &X, &Y);
-
-	//dX = (X - 960.0) / 1920.0;
-	_cam->yaw -= (X - 960.0) / 1920.0;
-	//dY = (Y - 540.0) / 1080.0;
-	_cam->pitch -= (Y - 540.0) / 1080.0;
-
-	//*cDirection = glm::rotate(*cDirection, (float)dY, cRight);
-	//*cDirection = glm::rotateY(*cDirection, (float)dX);
-	//*cDirection = glm::rotateX(*cDirection, (float)dY);
-
-	//*cUp = glm::rotateY(*cUp, (float)dX);
-	//*cUp = glm::rotateX(*cUp, (float)dY);
-	//*cRight = glm::rotate(*cRight, (float)-dY, cUp);
-	//*cDirection = glm::rotate(*cDirection, (float)dX, cUp);
-
-	_cam->update();
-
-	//glm::rotate(*cDirection, (float)X, cUp);
-	//glm::rotate(*cDirection, (float)Y, *cRight);
-
-	glfwSetCursorPos(_window, 960, 540);
 }
 
 void GLcalls()
