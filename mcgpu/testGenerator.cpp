@@ -25,17 +25,25 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	_ot->voxelData = new unsigned char[_dm->voxelRes*_dm->voxelRes*_dm->voxelRes];
 
 
-	//for (int x = 0; x < _dm->voxelRes; ++x){
-	//	for (int y = 0; y < _dm->voxelRes; ++y){
-	//		for (int z = 0; z < _dm->voxelRes; ++z){
-	//			/*if ((x > _dm->voxelRes / 4 && x < (_dm->voxelRes * 3) / 4) && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
-	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
-	//			else
-	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;*/
-	//			_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
-	//		}
-	//	}
-	//}
+	for (int x = 0; x < _dm->voxelRes; ++x){
+		for (int y = 0; y < _dm->voxelRes; ++y){
+			for (int z = 0; z < _dm->voxelRes; ++z){
+				/*if ((x > _dm->voxelRes / 4 && x < (_dm->voxelRes * 3) / 4) && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
+					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
+				else
+					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
+				
+				if (x == _dm->voxelRes / 4 && y % 4 == 0 && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
+					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;*/
+
+				if (y < (_dm->voxelRes / 2) + sin(100.0f*static_cast<float>(x) / _dm->voxelRes) + sin(100.0f*static_cast<float>(z) / _dm->voxelRes) || 
+					( (x % 6)  == 0 && (z % 6)  == 0 && y < (_dm->voxelRes / 2) + 10 ))
+					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
+				else
+					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
+			}
+		}
+	}
 	
 	
 	// generate marching cubes on the GPU ------------------------------
@@ -52,8 +60,7 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	// send scalar field as 3D texture to the GPU ---------------------
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, _dm->voxelTex);
-	
-	//glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, _dm->voxelRes, _dm->voxelRes, _dm->voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, _ot->voxelData);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, _dm->voxelRes, _dm->voxelRes, _dm->voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, _ot->voxelData);
 	//std::cout << "hej";
 
 	// send uniforms
@@ -63,6 +70,7 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	//glUniform1i(edgeTable, 2);
 
 	//start rendering with transform feedback
+	//glBindBufferRange(GL_TRANSFORM_FEEDBACK_BUFFER, 0, _dm->vertexbuffer, 0, 10000*sizeof(dBufferData));
 	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, _dm->vertexbuffer);
 	//glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, _dm->indexbuffer);
 
@@ -84,18 +92,17 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);
 	_dm->nrofVerts = nprimitives;
 
-	/*GLfloat feedback[4000];
-	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
-	for (int i = 0; i < 4000; i = i + 4 ) {
-		std::cout << feedback[i] << ", " <<
-			feedback[i + 1] << ", " <<
-			feedback[i + 2] << ", " <<
-			feedback[i + 3] << ", " << std::endl;
-			if (i % 12 == 0)
-				std::cout <<  "----------" << std::endl;
-		
-	}*/
-	
+	//GLfloat feedback[4000];
+	//glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
+	//for (int i = 0; i < 4000; i = i + 3 ) {
+	//	std::cout << feedback[i] << ", " <<
+	//		feedback[i + 1] << ", " <<
+	//		feedback[i + 2] << ", " << std::endl;
+	//		if (i % 9 == 0)
+	//			std::cout <<  "----------" << std::endl;
+	//	
+	//}
+	//
 	glBindVertexArray(0);
 
 }

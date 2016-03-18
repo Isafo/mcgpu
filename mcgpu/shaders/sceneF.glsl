@@ -30,7 +30,7 @@ void main () {
 
 	//specular part-------------
 	vec3 H = normalize(lightDir + viewDir);
-	float NdH = max(dot(normal, H), 0.0);
+	float NdH = max(dot(H, normal), 0.0);
 	float spec = pow(NdH, shininess);
 	vec3 specular = spec * white;
 

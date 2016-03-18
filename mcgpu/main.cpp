@@ -56,9 +56,9 @@ int main(){
 	MatrixStack MVstack; MVstack.init();
 
 	//scene objects
-	Sphere testSphere(0.0f, 0.0f, -1.0f, 0.1f);
+	Sphere testSphere(0.5f, 0.5f, -1.0f, 0.1f);
 
-	Sphere lightOne(0.5f, 0.5f, 1.0f, 0.1f);
+	Sphere lightOne(0.5f, 0.5f, -0.6f, 0.1f);
 	//TODO: do this properly
 	glm::vec4 LP = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);// glm::vec4(lightOne.getPosition()[0], lightOne.getPosition()[1], lightOne.getPosition()[2], 1.0f);
 	glm::mat4 lightT = glm::mat4(1.0f);
@@ -69,6 +69,7 @@ int main(){
 	firstMesh.createBuffers();
 	firstMesh.genTableTex();
 	firstTest.generate(&Octree, &firstMesh);
+	firstMesh.setPosition(&glm::vec3(0.5f, -100.5f, 2.2f));
 
 	Camera mCamera;
 	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, -4.0f));
@@ -112,19 +113,19 @@ int main(){
 				lightOne.render();
 			MVstack.pop(); //light transforms >--
 
-			MVstack.push();//sphere transforms --<
-				MVstack.multiply(firstMesh.getOrientation());
-				MVstack.translate(firstMesh.getPosition());
+			MVstack.push();//mesh transforms --<
+			MVstack.multiply(firstMesh.getOrientation());
+			MVstack.translate(firstMesh.getPosition());
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
 				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
 				firstMesh.render();
-			MVstack.pop(); //sphere transforms >--
+			MVstack.pop(); //mesh transforms >--
 			MVstack.push();//Plane transforms --<
-				MVstack.multiply(firstMesh.getOrientation());
-				MVstack.translate(firstMesh.getPosition());
+				MVstack.multiply(testSphere.getTransformM());
+				MVstack.translate(testSphere.getPositionV());
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
 				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
-				firstMesh.render();
+				testSphere.render();
 			MVstack.pop(); //Plane transforms >--
 
 		MVstack.pop(); //Camera transforms >--
@@ -214,6 +215,7 @@ void GLcalls()
 	glCullFace(GL_BACK);
 	//glDisable(GL_TEXTURE);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glFrontFace(GL_CCW);

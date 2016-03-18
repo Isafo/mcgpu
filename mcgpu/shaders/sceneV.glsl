@@ -8,7 +8,6 @@ out vec3 Normal;
 out vec2 UV;
 
 uniform mat4 MV;
-uniform mat4 M;
 uniform mat4 P;
 
 void main () 

@@ -433,21 +433,22 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 16, 256, 0, GL_ALPHA_INTEGER, GL_INT, triTable);
 
-	unsigned char* voxelData = new unsigned char[voxelRes*voxelRes*voxelRes];
+	//unsigned char* voxelData = new unsigned char[voxelRes*voxelRes*voxelRes];
 
+	//for (int x = 0; x < voxelRes; ++x){
+	//	for (int y = 0; y < voxelRes; ++y){
+	//		for (int z = 0; z < voxelRes; ++z){
+	//			if ((x > voxelRes / 4 && x < (voxelRes * 3) / 4) && (y > voxelRes / 4 && y < (voxelRes * 3) / 4) && (z > voxelRes / 4 && z < (voxelRes * 3) / 4))
+	//			voxelData[x + voxelRes*(y + voxelRes*z)] = 255;
+	//			else
+	//			voxelData[x + voxelRes*(y + voxelRes*z)] = 0;
+	//			//voxelData[x + voxelRes*(y + voxelRes*z)] = 128;
 
-
-	for (int x = 0; x < voxelRes; ++x){
-		for (int y = 0; y < voxelRes; ++y){
-			for (int z = 0; z < voxelRes; ++z){
-				if ((x > voxelRes / 4 && x < (voxelRes * 3) / 4) && (y > voxelRes / 4 && y < (voxelRes * 3) / 4) && (z > voxelRes / 4 && z < (voxelRes * 3) / 4))
-				voxelData[x + voxelRes*(y + voxelRes*z)] = 255;
-				else
-				voxelData[x + voxelRes*(y + voxelRes*z)] = 0;
-				//voxelData[x + voxelRes*(y + voxelRes*z)] = 128;
-			}
-		}
-	}
+	//			if (x == voxelRes / 4 && y % 4 == 0 && (y > voxelRes / 4 && y < (voxelRes * 3) / 4) && (z > voxelRes / 4 && z < (voxelRes * 3) / 4))
+	//				voxelData[x + voxelRes*(y + voxelRes*z)] = 255;
+	//		}
+	//	}
+	//}
 
 	glEnable(GL_TEXTURE_3D);
 	glActiveTexture(GL_TEXTURE0);
@@ -459,7 +460,7 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, voxelRes, voxelRes, voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, voxelData);
+	//glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, voxelRes, voxelRes, voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, voxelData);
 	//glBindTexture(NULL, 0);
 
 }
@@ -467,7 +468,7 @@ void DynamicMesh::genTableTex() {
 
 void DynamicMesh::render() {
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, nrofVerts);
+	glDrawArrays(GL_TRIANGLES, 0, MAX_NR_OF_TRIANGLES*2);
 	//glDrawElements(GL_TRIANGLES, 1000 * sizeof(triangle), GL_UNSIGNED_INT, (void*)0);
 	// (mode, vertex uN, type, element array buffer offset)
 	glBindVertexArray(0);

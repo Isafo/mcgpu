@@ -3,13 +3,13 @@ layout(location = 0) in vec3 VertexPosition;
 
 uniform vec3 octantPos;
 
-const uint dim = 16;
+const uint dim = 255;
 
 void main () {
 
 	vec3 vertexPosition = vec3(mod(gl_InstanceID, dim),
-							int(mod(gl_InstanceID, dim*dim)) / dim,
-							 gl_InstanceID / (dim * dim));
+							(int(mod(gl_InstanceID, dim*dim)) / dim),
+							 (gl_InstanceID / (dim * dim)));
 
 
 	//TODO: this is weird, is it a must?

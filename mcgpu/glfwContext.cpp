@@ -41,6 +41,8 @@ void glfwContext::init(int _w, int _h, const char* _wName)
 	glfwMakeContextCurrent(window[0].object);
 	currentWindow = window[0].object;
 
+	glViewport(0, 0, window[0].width, window[0].height);
+
 	std::cout << "glfw initialization complete" << std::endl;
 }
 

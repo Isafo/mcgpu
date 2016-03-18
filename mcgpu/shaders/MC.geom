@@ -5,7 +5,6 @@ layout(max_vertices = 15) out;
 
 uniform sampler3D scalarField;
 uniform isampler2D triTable;
-//uniform isampler2D edgeTable;
 
 const float isoValue = 0.5;
 
@@ -13,7 +12,7 @@ out vec3 vertexPosition;
 out vec3 vertexNormal;
 
 const float stepLength = 0.5f;
-const uint dim = 16;
+const uint dim = 256;
 vec3 scale;
 
 vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {
@@ -23,7 +22,7 @@ vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {
 }
 
 void main() {
-
+	// get the position of the scalarvalues in the 3Dtexture
 	vec3 xyz[8];
 	xyz[0] = gl_in[0].gl_Position.xyz + vec3(-stepLength, -stepLength, -stepLength );
 	xyz[1] = gl_in[0].gl_Position.xyz + vec3(stepLength, -stepLength, -stepLength );
@@ -38,7 +37,7 @@ void main() {
 	scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
-	//scalarValue[0] = texture(scalarField, vec3(0.5, 0.5, 0.5)).r;
+	// get the scalar values from the 3D texture
 	scalarValue[0] = texture(scalarField, xyz[0] * scale).r;
 	scalarValue[1] = texture(scalarField, xyz[1] * scale).r;
 	scalarValue[2] = texture(scalarField, xyz[2] * scale).r;
@@ -49,6 +48,7 @@ void main() {
 	scalarValue[6] = texture(scalarField, xyz[6] * scale).r;
 	scalarValue[7] = texture(scalarField, xyz[7] * scale).r;
 
+	// calculate the case index in the triangle table
 	int cubeIndex = 0;
 	cubeIndex += int(scalarValue[0] >= isoValue) * 1; 
 	cubeIndex += int(scalarValue[1] >= isoValue) * 2; 
@@ -61,6 +61,7 @@ void main() {
 
 	vec3 edgeVert[12];
 
+	// calculate the vertex position
 	edgeVert[0] = lerp(xyz[0] * scale, xyz[1] * scale, scalarValue[0], scalarValue[1]);
 	edgeVert[1] = lerp(xyz[1] * scale, xyz[2] * scale, scalarValue[1], scalarValue[2]);
 	edgeVert[2] = lerp(xyz[2] * scale, xyz[3] * scale, scalarValue[2], scalarValue[3]);
@@ -79,24 +80,34 @@ void main() {
 	// Issue triangles
 	int i = 0;
 	while (true) {
+		// get vertex indecies in edgeVert
 		int ti = texelFetch(triTable, ivec2(i, cubeIndex), 0).a;
 		if (ti == -1) break;
+		
+		int ti1 = texelFetch(triTable, ivec2(i + 1, cubeIndex), 0).a;
+		int ti2 = texelFetch(triTable, ivec2(i + 2, cubeIndex), 0).a;
+
+		vec3 triNormal =  cross(edgeVert[ti1] - edgeVert[ti], edgeVert[ti2] - edgeVert[ti]);
+		
 		vertexPosition = edgeVert[ti];
-		vertexNormal = vec3(1.0, 1.0, 1.0);
+		//vertexNormal = vec3(gl_InvocationID, 1.0, 1.0);
+		vertexNormal = triNormal;
+		gl_Position = vec4(vertexPosition, 1.0);
+		EmitVertex();
+		
+		vertexPosition = edgeVert[ti1];
+		//vertexNormal = vec3(gl_InvocationID, 1.0, 1.0);
+		vertexNormal = triNormal;
+		gl_Position = vec4(vertexPosition, 1.0);
+		EmitVertex();
+		
+		vertexPosition = edgeVert[ti2];
+		//vertexNormal = vec3(gl_InvocationID, 1.0, 1.0);
+		vertexNormal = triNormal;
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 
-		ti = texelFetch(triTable, ivec2(i + 1, cubeIndex), 0).a;
-		vertexPosition = edgeVert[ti];
-		vertexNormal = vec3(1.0, 1.0, 1.0);
-		gl_Position = vec4(vertexPosition, 1.0);
-		EmitVertex();
-
-		ti = texelFetch(triTable, ivec2(i + 2, cubeIndex), 0).a;
-		vertexPosition = edgeVert[ti];
-		vertexNormal = vec3(1.0, 1.0, 1.0);
-		gl_Position = vec4(vertexPosition, 1.0);
-		EmitVertex();
+		gl_PrimitiveID = gl_PrimitiveIDIn;
 
 		EndPrimitive();
 		i += 3;
