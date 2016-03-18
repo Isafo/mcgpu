@@ -83,14 +83,15 @@ void MatrixStack::rotAxis(glm::vec3* _Axis, float _a) {
 // Multiply the topmost (current) matrix with a uniform scaling
 void MatrixStack::scale(float _s) {
     glm::mat4 sm;
-	glm::scale(sm, glm::vec3(_s, _s, _s));
+	sm = glm::scale(sm, glm::vec3(_s, _s, _s));
     matrixMult(&currentMatrix->m, &sm, &currentMatrix->m);
 };
 
 // Multiply the topmost (current) matrix with a translation
 void MatrixStack::translate(glm::vec3* _Position) {
     glm::mat4 tm;
-	glm::translate(tm, *_Position);
+	//glm::vec3 test = *_Position;
+	tm = glm::translate(tm, *_Position);
     matrixMult(&currentMatrix->m, &tm, &currentMatrix->m);
 };
 

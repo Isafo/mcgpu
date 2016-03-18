@@ -37,7 +37,7 @@ void main () {
 	// Ambient-------------
 	vec3 ambient = 0.3*lightIntensity * white;// * texcolor * lightIntensity;
 	
-	vec3 resultLight = ambient + diffuse + specular;
+	vec3 resultLight = ambient + diffuse;// + specular;
 	FragColor = vec4(resultLight, texAlpha);
 }
 

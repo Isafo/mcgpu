@@ -56,9 +56,10 @@ int main(){
 	MatrixStack MVstack; MVstack.init();
 
 	//scene objects
-	Sphere testSphere(0.5f, 0.5f, -1.0f, 0.1f);
+	Sphere testSphere(0.0f, 0.0f, -1.0f, 0.1f);
+	Sphere testSphere1(0.5f, -10.5f, -1.0f, 0.1f);
 
-	Sphere lightOne(0.5f, 0.5f, -0.6f, 0.1f);
+	Sphere lightOne(0.0f, 0.0f, 0.0f, 0.1f);
 	//TODO: do this properly
 	glm::vec4 LP = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);// glm::vec4(lightOne.getPosition()[0], lightOne.getPosition()[1], lightOne.getPosition()[2], 1.0f);
 	glm::mat4 lightT = glm::mat4(1.0f);
@@ -69,10 +70,10 @@ int main(){
 	firstMesh.createBuffers();
 	firstMesh.genTableTex();
 	firstTest.generate(&Octree, &firstMesh);
-	firstMesh.setPosition(&glm::vec3(0.5f, -100.5f, 2.2f));
+	firstMesh.setPosition(&glm::vec3(0.0f, -50.0f, 0.0f));
 
 	Camera mCamera;
-	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, -4.0f));
+	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, 0.0f));
 	mCamera.update();
 
 
@@ -114,15 +115,18 @@ int main(){
 			MVstack.pop(); //light transforms >--
 
 			MVstack.push();//mesh transforms --<
-			MVstack.multiply(firstMesh.getOrientation());
-			MVstack.translate(firstMesh.getPosition());
+				//MVstack.multiply(testSphere1.getTransformM());
+				MVstack.multiply(firstMesh.getOrientation());
+				MVstack.translate(firstMesh.getPosition());
+				MVstack.scale(50.0f);
+
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
 				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
 				firstMesh.render();
 			MVstack.pop(); //mesh transforms >--
 			MVstack.push();//Plane transforms --<
 				MVstack.multiply(testSphere.getTransformM());
-				MVstack.translate(testSphere.getPositionV());
+			//	MVstack.translate(testSphere.getPositionV());
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
 				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
 				testSphere.render();
