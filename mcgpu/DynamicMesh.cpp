@@ -51,6 +51,8 @@ void DynamicMesh::createBuffers() {
 
 	float* fVertexP;
 
+	//single point vao -------------------------------------------------------------
+
 	glGenVertexArrays(1, &singlePointvao);
 	glBindVertexArray(singlePointvao);
 
@@ -73,13 +75,7 @@ void DynamicMesh::createBuffers() {
 	// Specify how many attribute arrays we have in our VAO
 	glEnableVertexAttribArray(0); // Vertex coordinates
 
-	// Specify how OpenGL should interpret the vertex buffer data:
-	// Attributes 0, 1, 2 (must match the lines above and the layout in the shader)
-	// Number of dimensions (3 means vec3 in the shader, 2 means vec2)
-	// Type GL_FLOAT
-	// Not normalized (GL_FALSE)
-	// Stride 8 (interleaved array with 8 floats per vertex)
-	// Array buffer offset 0, 3, 6 (offset into first vertex)
+	// Specify how OpenGL should interpret the vertex buffer data
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 		sizeof(GLfloat)*3, (void*)0); // xyz coordinates
 
@@ -91,8 +87,33 @@ void DynamicMesh::createBuffers() {
 	
 	//transform feedback buffers ------------------------------------------------------
 
-	//vertexP = &vertexArray[0];
-	//indexP = &triangleArray[0];
+	//non empty cells buffer ---------------------------------------------------------- 
+
+	glGenBuffers(1, &nonEmptyCellsBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, nonEmptyCellsBuffer);
+	glBufferData(GL_ARRAY_BUFFER,
+		(voxelRes*voxelRes*10)* sizeof(dBufferData), NULL, GL_STREAM_DRAW);
+
+	glEnableVertexAttribArray(0); // Vertex coordinates
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
+		sizeof(GLfloat)*3, (void*)0); // xyz coordinates
+	
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	//non empty edges buffer --------------------------------------------------------
+
+	//
+	//
+	//
+	//
+	// something...
+	//
+	//
+	//
+	//
+
+	// final VAO, VBO and IBO objects ------------------------------------------------
 
 	// Generate one vertex array object (VAO) and bind it
 	glGenVertexArrays(1, &vao);
@@ -108,30 +129,11 @@ void DynamicMesh::createBuffers() {
 	glBufferData(GL_ARRAY_BUFFER,
 				 (MAX_NR_OF_VERTICES) * sizeof(dBufferData), NULL, GL_STREAM_DRAW);
 
-	//vertexP = (dBufferData*)glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(dBufferData) * MAX_NR_OF_VERTICES,
-	//										 GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-
-	//for (int i = 0; i < MAX_NR_OF_VERTICES; i++) {
-	//	vertexP[i].x = 0.0f;
-	//	vertexP[i].y = 0.0f;
-	//	vertexP[i].z = 0.0f;
-	//	vertexP[i].nx = 0.0f;
-	//	vertexP[i].ny = 0.0f;
-	//	vertexP[i].nz = 0.0f;
-	//}
-	//glUnmapBuffer(GL_ARRAY_BUFFER);
-
 	// Specify how many attribute arrays we have in our VAO
 	glEnableVertexAttribArray(0); // Vertex coordinates
 	glEnableVertexAttribArray(1); // Normals
 
 	// Specify how OpenGL should interpret the vertex buffer data:
-	// Attributes 0, 1, 2 (must match the lines above and the layout in the shader)
-	// Number of dimensions (3 means vec3 in the shader, 2 means vec2)
-	// Type GL_FLOAT
-	// Not normalized (GL_FALSE)
-	// Stride 8 (interleaved array with 8 floats per vertex)
-	// Array buffer offset 0, 3, 6 (offset into first vertex)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
 		sizeof(dBufferData), (void*)0); // xyz coordinates
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
@@ -142,17 +144,6 @@ void DynamicMesh::createBuffers() {
 	// Present our vertex indices to OpenGL
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
 				 (MAX_NR_OF_TRIANGLES) * sizeof(triangle), NULL, GL_STREAM_DRAW);
-
-	/*indexP = (triangle*)glMapBufferRange(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(triangle) * MAX_NR_OF_TRIANGLES,
-		GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-
-	for (int i = 0; i < MAX_NR_OF_TRIANGLES; i++) {
-		indexP[i].index[0] = 0;
-		indexP[i].index[1] = 0;
-		indexP[i].index[2] = 0;
-	}
-
-	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);*/
 
 	// Deactivate (unbind) the VAO and the buffers again.
 	// Do NOT unbind the buffers while the VAO is still bound.

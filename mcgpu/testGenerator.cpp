@@ -6,12 +6,41 @@ testGenerator::testGenerator()
 {
 	octantStack.reserve(100);
 
+	//non optimized MC shader
 	mcShader.createShader("shaders/MC.vert", "shaders/MC.frag", "shaders/MC.geom");
 
 	volumeTex = glGetUniformLocation(mcShader.programID, "scalarField");
 	triTable = glGetUniformLocation(mcShader.programID, "triTable");
 
 	octantPos = glGetUniformLocation(mcShader.programID, "octantPos");
+
+	// MC pass 1 shader
+	//mc1Shader.createShader("shaders/MC1.vert", "shaders/MC1.frag", "shaders/MC1.geom");
+	//volumeTex = glGetUniformLocation(mc1Shader.programID, "scalarField");
+	//triTable = glGetUniformLocation(mc1Shader.programID, "triTable");
+
+	//octantPos = glGetUniformLocation(mc1Shader.programID, "octantPos");
+
+	// MC pass 2 shader
+	//
+	//something...
+	//
+	
+	// MC pass 3 shader
+	//
+	//something...
+	//
+
+	// MC pass 4 shader
+	//
+	//something...
+	//
+
+	// MC pass 5 shader
+	//
+	//something...
+	//
+
 }
 
 testGenerator::~testGenerator(){

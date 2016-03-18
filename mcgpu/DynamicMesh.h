@@ -40,7 +40,7 @@ class DynamicMesh : public Mesh{
 	GLuint triTableTex;
 
 	GLuint singlePointvao;          // Vertex array object, the main handle for geometry
-
+	GLuint nonEmptyCellsBuffer;
   private:
 
 	  //TODO: remove one zero

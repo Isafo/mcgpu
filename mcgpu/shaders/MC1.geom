@@ -1,7 +1,7 @@
 #version 450
 layout(points) in;
-layout(triangle_strip) out;
-layout(max_vertices = 15) out;
+layout(points) out;
+layout(max_vertices = 1) out;
 
 uniform sampler3D scalarField;
 uniform isampler2D triTable;
@@ -33,7 +33,7 @@ void main() {
 	xyz[5] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, -stepLength );
 	xyz[6] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, stepLength );
 	xyz[7] = gl_in[0].gl_Position.xyz + vec3(-stepLength, stepLength, stepLength );
-
+	
 	scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
@@ -61,65 +61,13 @@ void main() {
 
 	vec3 edgeVert[12];
 
-	// calculate the vertex position
-	edgeVert[0] = lerp(xyz[0] * scale, xyz[1] * scale, scalarValue[0], scalarValue[1]);
-	edgeVert[1] = lerp(xyz[1] * scale, xyz[2] * scale, scalarValue[1], scalarValue[2]);
-	edgeVert[2] = lerp(xyz[2] * scale, xyz[3] * scale, scalarValue[2], scalarValue[3]);
-	edgeVert[3] = lerp(xyz[3] * scale, xyz[0] * scale, scalarValue[3], scalarValue[0]);
-
-	edgeVert[4] = lerp(xyz[4] * scale, xyz[5] * scale, scalarValue[4], scalarValue[5]);
-	edgeVert[5] = lerp(xyz[5] * scale, xyz[6] * scale, scalarValue[5], scalarValue[6]);
-	edgeVert[6] = lerp(xyz[6] * scale, xyz[7] * scale, scalarValue[6], scalarValue[7]);
-	edgeVert[7] = lerp(xyz[7] * scale, xyz[4] * scale, scalarValue[7], scalarValue[4]);
-
-	edgeVert[8] = lerp(xyz[0] * scale, xyz[4] * scale, scalarValue[0], scalarValue[4]);
-	edgeVert[9] = lerp(xyz[1] * scale, xyz[5] * scale, scalarValue[1], scalarValue[5]);
-	edgeVert[10] = lerp(xyz[2] * scale, xyz[6] * scale, scalarValue[2], scalarValue[6]);
-	edgeVert[11] = lerp(xyz[3] * scale, xyz[7] * scale, scalarValue[3], scalarValue[7]);
-	
-	// Issue triangles
-	int i = 0;
-	while (true) {
-		// get vertex indecies in edgeVert
-		int ti = texelFetch(triTable, ivec2(i, cubeIndex), 0).a;
-		if (ti == -1) break;
-		
-		int ti1 = texelFetch(triTable, ivec2(i + 1, cubeIndex), 0).a;
-		int ti2 = texelFetch(triTable, ivec2(i + 2, cubeIndex), 0).a;
-
-		vec3 triNormal =  cross(edgeVert[ti1] - edgeVert[ti], edgeVert[ti2] - edgeVert[ti]);
-
+	if(cubeIndex != 0 && cubeIndex != 255){
 		vertexPosition = edgeVert[ti];
 		vertexNormal = triNormal;
-		EmitVertex();
-		
-		vertexPosition = edgeVert[ti1];
-		vertexNormal = triNormal;
-		EmitVertex();
-		
-		vertexPosition = edgeVert[ti2];
-		vertexNormal = triNormal;
+		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
 
 		EndPrimitive();
-		i += 3;
 	}
+		
 }
-
-	/* //DEGUG	
-	vertexPosition = gl_in[0].gl_Position.xyz;
-	vertexNormal = vec3(1,1,1);
-	gl_Position = vec4(vertexPosition, 1.0);
-	EmitVertex();
-		
-	vertexPosition = gl_in[0].gl_Position.xyz;
-	vertexNormal = vec3(1,1,1);
-	gl_Position = vec4(vertexPosition, 1.0);
-	EmitVertex();
-		
-	vertexPosition = gl_in[0].gl_Position.xyz;
-	vertexNormal = vec3(1,1,1);
-	gl_Position = vec4(vertexPosition, 1.0);
-	EmitVertex();
-	EndPrimitive();
-	*/
