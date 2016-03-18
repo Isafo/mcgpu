@@ -117,11 +117,11 @@ void Camera::fpsCamera(GLFWwindow* _window, double _dT)
 
 	yaw -= (X - 960.0) / 1920.0;
 	pitch -= (Y - 540.0) / 1080.0;
+	pitch = std::fmax(std::fmin(pitch, 1.57079f), -1.57079f);
 
 	this->update();
 
 	glm::vec3 translation;
-
 	float movementSpeed = 0.0f;
 
 	if (glfwGetKey(_window, GLFW_KEY_LEFT_SHIFT)){
