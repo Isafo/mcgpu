@@ -5,17 +5,30 @@ layout(max_vertices = 1) out;
 
 uniform sampler3D scalarField;
 uniform isampler2D triTable;
+uniform isampler2D edgeTable;
 
 const float isoValue = 0.5;
 
-out vec3 vertexPosition;
+out vec2 voxelPositionXY;
+out vec3 neededEdges;
+
+out int gl_Layer;
 
 const float stepLength = 0.5f;
 const uint dim = 256;
 vec3 scale;
 
+vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {
+	float dVal = (isoValue - firstI) / (secondI - firstI);
+	//return vec4(first + dVal*(second - first), 1.0f);
+	return first + dVal*(second - first);
+}
 
 void main() {
+	
+	gl_Layer = gl_in[0].gl_Position.z;
+	voxelPosition = gl_in[0].gl_Position.xy;
+
 	// get the position of the scalarvalues in the 3Dtexture
 	vec3 xyz[8];
 	xyz[0] = gl_in[0].gl_Position.xyz + vec3(-stepLength, -stepLength, -stepLength );
@@ -27,7 +40,7 @@ void main() {
 	xyz[5] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, -stepLength );
 	xyz[6] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, stepLength );
 	xyz[7] = gl_in[0].gl_Position.xyz + vec3(-stepLength, stepLength, stepLength );
-	
+
 	scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
@@ -52,15 +65,17 @@ void main() {
 	cubeIndex += int(scalarValue[5] >= isoValue) * 32; 
 	cubeIndex += int(scalarValue[6] >= isoValue) * 64; 
 	cubeIndex += int(scalarValue[7] >= isoValue) * 128;
-
-	vec3 edgeVert[12];
-
-	if(cubeIndex != 0 && cubeIndex != 255){
-		vertexPosition = gl_in[0].gl_Position.xyz;
-		gl_Position = vec4(vertexPosition, 1.0);
-		EmitVertex();
-
-		EndPrimitive();
+	
+	int edgeIndex = texelFetch(edgeTable, ivec2(0, cubeIndex), 0).a;
+	neededEdges = vec3(0.0, 0.0, 0.0);
+	if( edgeIndex & 32 ){
+		neededEdges.x = 1;
 	}
-		
+	if( edgeIndex & 64 ){
+		neededEdges.y = 1;
+	}
+	if( edgeIndex & 1024 ){
+		neededEdges.z = 1;
+	}
+
 }

@@ -33,6 +33,9 @@ class DynamicMesh : public Mesh{
 
 	void genTableTex();
 
+	GLuint tmpFbo;
+
+	GLuint edgeTex;
 	GLuint voxelTex;
 	const int voxelRes = 256;
 
@@ -40,7 +43,11 @@ class DynamicMesh : public Mesh{
 	GLuint triTableTex;
 
 	GLuint singlePointvao;          // Vertex array object, the main handle for geometry
+	
 	GLuint nonEmptyCellsBuffer;
+	GLuint nonEmptyCellsArray;
+	
+	GLuint nonEmptyEdgesBuffer;
   private:
 
 	  //TODO: remove one zero

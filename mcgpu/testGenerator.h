@@ -16,6 +16,12 @@ private:
 
 	Shader mcShader;
 
+	Shader mc1Shader;
+	Shader mc2Shader;
+	Shader mc3Shader;
+	Shader mc4Shader;
+	Shader mc5Shader;
+
 	//GLint locationDims;
 	//GLint locationVposition;
 
