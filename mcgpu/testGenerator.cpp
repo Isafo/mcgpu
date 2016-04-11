@@ -45,13 +45,17 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 		}
 	}
 	
+	// generate the scalarfield -------------------------------------------------------------
+
+	// generate marching cubes on the GPU ------------------------------
+	// bind mcShader
+	
+
 	
 	// generate marching cubes on the GPU ------------------------------
 	// bind mcShader
 	glUseProgram(mcShader.programID);
 
-	
-	
 	// bind textures
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, _dm->triTableTex);
