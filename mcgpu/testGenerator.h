@@ -15,22 +15,25 @@ private:
 	std::vector<octantStackElement> octantStack;
 
 	Shader mcShader;
+	GLint volumeTex;
+	GLint triTable;
+	GLint octantPos;
 
 	Shader mc1Shader;
+	GLint volumeTex1;
+	GLint triTable1;
+	GLint octantPos1;
+
 	Shader mc2Shader;
+	GLint volumeTex2;
+	GLint triTable2;
+	GLint edgeTable2;
+	GLint octantPos2;
+
 	Shader mc3Shader;
 	Shader mc4Shader;
 	Shader mc5Shader;
 
-	//GLint locationDims;
-	//GLint locationVposition;
-
-	GLint volumeTex;
-	GLint triTable;
-	GLint edgeTable;
-
-	GLint octantPos;
-	//GLint isoValue;
 
 
 };

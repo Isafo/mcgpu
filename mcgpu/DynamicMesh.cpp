@@ -453,27 +453,6 @@ void DynamicMesh::genTableTex() {
 	{ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 } };
 
 
-	glActiveTexture(GL_TEXTURE1);
-	glGenTextures(1, &triTableTex);
-	glBindTexture(GL_TEXTURE_2D, triTableTex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 16, 256, 0, GL_ALPHA_INTEGER, GL_INT, triTable);
-
-
-	glActiveTexture(GL_TEXTURE2);
-	glGenTextures(1, &edgeTableTex);
-	glBindTexture(GL_TEXTURE_2D, edgeTableTex);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 1, 256, 0, GL_ALPHA_INTEGER, GL_INT, edgeTable);
-
 	//unsigned char* voxelData = new unsigned char[voxelRes*voxelRes*voxelRes];
 
 	//for (int x = 0; x < voxelRes; ++x){
@@ -491,24 +470,11 @@ void DynamicMesh::genTableTex() {
 	//	}
 	//}
 
-	glEnable(GL_TEXTURE_3D);
-	glActiveTexture(GL_TEXTURE4);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, &edgeTex);
-	glBindTexture(GL_TEXTURE_3D, edgeTex);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 	
-	glGenFramebuffers(1, &tmpFbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, tmpFbo);
-	glFramebufferTexture(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, edgeTex, 0);
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	glEnable(GL_TEXTURE_3D);
 	glActiveTexture(GL_TEXTURE0);
+	//TODO: UNDERSTAND THIS FUNCTION 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &voxelTex);
 	glBindTexture(GL_TEXTURE_3D, voxelTex);
@@ -519,6 +485,45 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
 	//glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, voxelRes, voxelRes, voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, voxelData);
 	//glBindTexture(NULL, 0);
+
+	glActiveTexture(GL_TEXTURE1);
+	glGenTextures(1, &triTableTex);
+	glBindTexture(GL_TEXTURE_2D, triTableTex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 16, 256, 0, GL_ALPHA_INTEGER, GL_INT, triTable);
+
+	glActiveTexture(GL_TEXTURE2);
+	glGenTextures(1, &edgeTableTex);
+	glBindTexture(GL_TEXTURE_2D, edgeTableTex);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 1, 256, 0, GL_ALPHA_INTEGER, GL_INT, edgeTable);
+
+
+	glEnable(GL_TEXTURE_3D);
+	glActiveTexture(GL_TEXTURE4);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 4);
+	glGenTextures(1, &edgeTex);
+	glBindTexture(GL_TEXTURE_3D, edgeTex);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, voxelRes, voxelRes, voxelRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+	glGenFramebuffers(1, &tmpFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, tmpFbo);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, edgeTex, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
 }
 
 

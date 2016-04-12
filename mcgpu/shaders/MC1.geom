@@ -11,7 +11,7 @@ const float isoValue = 0.5;
 out vec3 vertexPosition;
 
 const float stepLength = 0.5f;
-const uint dim = 256;
+const uint dim = 32;
 vec3 scale;
 
 

@@ -7,25 +7,25 @@ testGenerator::testGenerator()
 	octantStack.reserve(100);
 
 	//non optimized MC shader
-	mcShader.createShader("shaders/MC.vert", "shaders/MC.frag", "shaders/MC.geom");
+	//mcShader.createShader("shaders/MC.vert", "shaders/MC.frag", "shaders/MC.geom", "vertexPosition", "vertexNormal");
 
-	volumeTex = glGetUniformLocation(mcShader.programID, "scalarField");
-	triTable = glGetUniformLocation(mcShader.programID, "triTable");
+	//volumeTex1 = glGetUniformLocation(mcShader.programID, "scalarField");
+	//triTable1 = glGetUniformLocation(mcShader.programID, "triTable");
 
-	octantPos = glGetUniformLocation(mcShader.programID, "octantPos");
+	//octantPos = glGetUniformLocation(mcShader.programID, "octantPos");
 
 	// MC pass 1 shader
 	mc1Shader.createShader("shaders/MC1.vert", "shaders/MC1.frag", "shaders/MC1.geom", "vertexPosition");
-	//volumeTex = glGetUniformLocation(mc1Shader.programID, "scalarField");
-	//triTable = glGetUniformLocation(mc1Shader.programID, "triTable");
-
-	//octantPos = glGetUniformLocation(mc1Shader.programID, "octantPos");
+	volumeTex1 = glGetUniformLocation(mc1Shader.programID, "scalarField");
+	triTable1 = glGetUniformLocation(mc1Shader.programID, "triTable");
+	octantPos1 = glGetUniformLocation(mc1Shader.programID, "octantPos");
 
 	// MC pass 2 shader
-	mc2Shader.createShader("shaders/MC1.vert", "shaders/MC1.frag", "shaders/MC1.geom");
-	//volumeTex = glGetUniformLocation(mc1Shader.programID, "scalarField");
-	//triTable = glGetUniformLocation(mc1Shader.programID, "triTable");
-	edgeTable = glGetUniformLocation(mc2Shader.programID, "edgeTable");
+	mc2Shader.createShader("shaders/MC2.vert", "shaders/MC2.frag", "shaders/MC2.geom");
+	volumeTex2 = glGetUniformLocation(mc2Shader.programID, "scalarField");
+	triTable2 = glGetUniformLocation(mc2Shader.programID, "triTable");
+	edgeTable2 = glGetUniformLocation(mc2Shader.programID, "edgeTable");
+	octantPos2 = glGetUniformLocation(mc1Shader.programID, "octantPos");
 	// MC pass 3 shader
 	//
 	//something...
@@ -88,16 +88,15 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, _dm->voxelTex);
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, _dm->voxelRes, _dm->voxelRes, _dm->voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, _ot->voxelData);
-	//std::cout << "hej";
 
 	//FIRST PASS - march all voxels and output those that needed tris to
 	// VBO "nonEmptyCellsBuffer" ---------------------------------------------------------------
 	glUseProgram(mc1Shader.programID);
 
 	// send uniforms
-	glUniform3fv(octantPos, 1, &_ot->pos[0]);
-	glUniform1i(volumeTex, 0);
-	glUniform1i(triTable, 1);
+	glUniform3fv(octantPos1, 1, &_ot->pos[0]);
+	glUniform1i(volumeTex1, 0);
+	glUniform1i(triTable1, 1);
 	//glUniform1i(edgeTable, 2);
 
 	//start rendering with transform feedback
@@ -118,6 +117,8 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glEndTransformFeedback();
 	glDisable(GL_RASTERIZER_DISCARD);
 
+	//glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
+
 	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
 	GLuint nprimitives;
 	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);
@@ -135,22 +136,37 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	}
 	
 	//SECOND PASS - march voxels that needed tris and output edges that needed verts to
-	// VBO "nonEmptyEdgesBuffer" ---------------------------------------------------------------
+	// texture "nonEmptyEdgesBuffer" ---------------------------------------------------------------
 	glUseProgram(mc2Shader.programID);
 
-	// send uniforms
-	glUniform3fv(octantPos, 1, &_ot->pos[0]);
-	glUniform1i(volumeTex, 0);
-	glUniform1i(triTable, 1);
-	glUniform1i(edgeTable, 2);
+	// bind textures
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, _dm->edgeTableTex);
+	// send scalar field as 3D texture to the GPU ---------------------
 
-	//TODO: maybe replace with something else, for example a texture.
-	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, _dm->nonEmptyEdgesBuffer);
+
+	// send uniforms
+	glUniform3fv(octantPos2, 1, &_ot->pos[0]);
+	glUniform1i(volumeTex2, 0);
+	glUniform1i(triTable2, 1);
+	glUniform1i(edgeTable2, 2);
+
+	glViewport(0, 0, 32, 32);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _dm->tmpFbo);
+	//glClear(GL_DEPTH_BUFFER_BIT);
 
 	glBindVertexArray(_dm->nonEmptyCellsArray);
 	//TODO: determine number of points to draw properly
-	glDrawArrays(GL_POINTS, 0, _dm->voxelRes*_dm->voxelRes*_dm->voxelRes);
+	glDrawArrays(GL_POINTS, 0, nprimitives);
 	
+	GLint pixels1[32 * 32 * 32];
+	GLubyte pixels[32*32*32*4];
+	
+	glBindTexture(GL_TEXTURE_3D, _dm->edgeTex);
+	glGetTexImage(GL_TEXTURE_3D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]);
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glViewport(0, 0, 1920, 1080);
 
 	glBindVertexArray(0);
 

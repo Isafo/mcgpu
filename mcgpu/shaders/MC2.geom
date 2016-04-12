@@ -1,5 +1,6 @@
 #version 450
 layout(points) in;
+//layout(triangle_strip) out;
 layout(points) out;
 layout(max_vertices = 1) out;
 
@@ -9,13 +10,12 @@ uniform isampler2D edgeTable;
 
 const float isoValue = 0.5;
 
-out vec2 voxelPositionXY;
 out vec3 neededEdges;
 
-out int gl_Layer;
+//out int gl_Layer;
 
 const float stepLength = 0.5f;
-const uint dim = 256;
+const uint dim = 32;
 vec3 scale;
 
 vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {
@@ -26,8 +26,7 @@ vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {
 
 void main() {
 	
-	gl_Layer = gl_in[0].gl_Position.z;
-	voxelPosition = gl_in[0].gl_Position.xy;
+	
 
 	// get the position of the scalarvalues in the 3Dtexture
 	vec3 xyz[8];
@@ -69,13 +68,26 @@ void main() {
 	int edgeIndex = texelFetch(edgeTable, ivec2(0, cubeIndex), 0).a;
 	neededEdges = vec3(0.0, 0.0, 0.0);
 	if( edgeIndex & 32 ){
-		neededEdges.x = 1;
+		neededEdges.x = 0.25;
 	}
 	if( edgeIndex & 64 ){
-		neededEdges.y = 1;
+		neededEdges.y = 0.5;
 	}
 	if( edgeIndex & 1024 ){
-		neededEdges.z = 1;
+		neededEdges.z = 0.75;
 	}
 
+	gl_PointSize = 1;
+	gl_Layer = int(gl_in[0].gl_Position.z);
+	gl_Position = vec4((gl_in[0].gl_Position.xy/dim)*2 - vec2(1,1), 0, 1);
+	EmitVertex();
+
+	/*gl_Layer = int(gl_in[0].gl_Position.z);
+	gl_Position = vec4(1, -1, 0, 1);
+	EmitVertex();
+
+	gl_Layer = int(gl_in[0].gl_Position.z);
+	gl_Position = vec4(1, 1, 0, 1);
+	EmitVertex();*/
+	//EndPrimitive();
 }
