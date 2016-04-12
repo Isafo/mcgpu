@@ -34,12 +34,14 @@ class DynamicMesh : public Mesh{
 	void genTableTex();
 
 	GLuint voxelTex;
-	const int voxelRes = 256;
+	const int voxelRes = 32;
 
 	GLuint edgeTableTex;
 	GLuint triTableTex;
 
 	GLuint singlePointvao;          // Vertex array object, the main handle for geometry
+
+	GLuint tmpFbo;
 
   private:
 

@@ -6,7 +6,8 @@ testGenerator::testGenerator()
 {
 	octantStack.reserve(100);
 
-	mcShader.createShader("shaders/MC.vert", "shaders/MC.frag", "shaders/MC.geom");
+	scalarGen.createShader("shaders/genScalarfield.vert", "shaders/genScalarfield.frag", "shaders/genScalarfield.geom");
+	mcShader.createTransformShader("shaders/MC.vert", "shaders/MC.frag", "shaders/MC.geom");
 
 	volumeTex = glGetUniformLocation(mcShader.programID, "scalarField");
 	triTable = glGetUniformLocation(mcShader.programID, "triTable");
@@ -22,30 +23,46 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 
 	//Generate scalar field ---------------------------------------
 
-	_ot->voxelData = new unsigned char[_dm->voxelRes*_dm->voxelRes*_dm->voxelRes];
+	//_ot->voxelData = new unsigned char[_dm->voxelRes*_dm->voxelRes*_dm->voxelRes];
 
 
-	for (int x = 0; x < _dm->voxelRes; ++x){
-		for (int y = 0; y < _dm->voxelRes; ++y){
-			for (int z = 0; z < _dm->voxelRes; ++z){
-				/*if ((x > _dm->voxelRes / 4 && x < (_dm->voxelRes * 3) / 4) && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
-					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
-				else
-					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
-				
-				if (x == _dm->voxelRes / 4 && y % 4 == 0 && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
-					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;*/
+	//for (int x = 0; x < _dm->voxelRes; ++x){
+	//	for (int y = 0; y < _dm->voxelRes; ++y){
+	//		for (int z = 0; z < _dm->voxelRes; ++z){
+	//			/*if ((x > _dm->voxelRes / 4 && x < (_dm->voxelRes * 3) / 4) && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
+	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
+	//			else
+	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
+	//			
+	//			if (x == _dm->voxelRes / 4 && y % 4 == 0 && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
+	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;*/
 
-				if (y < (_dm->voxelRes / 2) + sin(100.0f*static_cast<float>(x) / _dm->voxelRes) + sin(100.0f*static_cast<float>(z) / _dm->voxelRes) || 
-					( (x % 6)  == 0 && (z % 6)  == 0 && y < (_dm->voxelRes / 2) + 10 ))
-					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
-				else
-					_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
-			}
-		}
-	}
+	//			if (y < (_dm->voxelRes / 2) + sin(100.0f*static_cast<float>(x) / _dm->voxelRes) + sin(100.0f*static_cast<float>(z) / _dm->voxelRes) || 
+	//				( (x % 6)  == 0 && (z % 6)  == 0 && y < (_dm->voxelRes / 2) + 10 ))
+	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
+	//			else
+	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
+	//		}
+	//	}
+	//}
 	
 	// generate the scalarfield -------------------------------------------------------------
+	
+	glUseProgram(scalarGen.programID);
+	
+	glViewport(0, 0, 32, 32);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _dm->tmpFbo);
+	glBindVertexArray(_dm->singlePointvao);
+	
+	glDrawArraysInstanced(GL_POINTS, 0, 1, std::pow(_dm->voxelRes, 2));
+
+	GLubyte pixels[32 * 32 * 32];
+
+	glBindTexture(GL_TEXTURE_3D, _dm->voxelTex);
+	glGetTexImage(GL_TEXTURE_3D, 0, GL_RED, GL_UNSIGNED_BYTE, &pixels[0]);
+
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glViewport(0, 0, 1920, 1080);
 
 	// generate marching cubes on the GPU ------------------------------
 	// bind mcShader
@@ -61,6 +78,7 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glBindTexture(GL_TEXTURE_2D, _dm->triTableTex);
 	/*glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, _dm->edgeTableTex);*/
+
 	// send scalar field as 3D texture to the GPU ---------------------
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_3D, _dm->voxelTex);

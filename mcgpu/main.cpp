@@ -46,9 +46,6 @@ int main(){
 	Shader sceneLight;
 	sceneLight.createShader("shaders/sceneV.glsl", "shaders/sceneF.glsl");
 
-	Shader scalarGen;
-	scalarGen.createShader("shaders/genScalarfield.vert", "shaders/genScalarfield.frag", "shaders/genScalarfield.geom");
-
 	GLint locationP = glGetUniformLocation(sceneLight.programID, "P"); //perspective matrix
 	GLint locationMV = glGetUniformLocation(sceneLight.programID, "MV"); //modelview matrix
 	GLint locationM = glGetUniformLocation(sceneLight.programID, "M"); //modelview matrix
