@@ -3,7 +3,7 @@ layout(location = 0) in vec3 VertexPosition;
 
 uniform vec3 octantPos;
 
-const uint dim = 32;
+const uint dim = 30;
 
 void main () {
 

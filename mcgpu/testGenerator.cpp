@@ -16,20 +16,22 @@ testGenerator::testGenerator()
 
 	// MC pass 1 shader
 	mc1Shader.createShader("shaders/MC1.vert", "shaders/MC1.frag", "shaders/MC1.geom", "vertexPosition");
-	volumeTex1 = glGetUniformLocation(mc1Shader.programID, "scalarField");
-	triTable1 = glGetUniformLocation(mc1Shader.programID, "triTable");
-	octantPos1 = glGetUniformLocation(mc1Shader.programID, "octantPos");
+	uID_volumeTex1 = glGetUniformLocation(mc1Shader.programID, "scalarField");
+	uID_triTable1 = glGetUniformLocation(mc1Shader.programID, "triTable");
+	uID_octantPos1 = glGetUniformLocation(mc1Shader.programID, "octantPos");
 
 	// MC pass 2 shader
 	mc2Shader.createShader("shaders/MC2.vert", "shaders/MC2.frag", "shaders/MC2.geom");
-	volumeTex2 = glGetUniformLocation(mc2Shader.programID, "scalarField");
-	triTable2 = glGetUniformLocation(mc2Shader.programID, "triTable");
-	edgeTable2 = glGetUniformLocation(mc2Shader.programID, "edgeTable");
-	octantPos2 = glGetUniformLocation(mc1Shader.programID, "octantPos");
+	uID_volumeTex2 = glGetUniformLocation(mc2Shader.programID, "scalarField");
+	uID_triTable2 = glGetUniformLocation(mc2Shader.programID, "triTable");
+	uID_edgeTable2 = glGetUniformLocation(mc2Shader.programID, "edgeTable");
+	uID_octantPos2 = glGetUniformLocation(mc1Shader.programID, "octantPos");
 	// MC pass 3 shader
-	//
-	//something...
-	//
+	mc3Shader.createShader("shaders/MC3.vert", "shaders/MC3.frag", "shaders/MC3.geom", "vertexPosition", "vertexNormal");
+	uID_volumeTex3 = glGetUniformLocation(mc3Shader.programID, "scalarField");
+	uID_octantPos3 = glGetUniformLocation(mc3Shader.programID, "octantPos");
+	uID_edgeTex3 = glGetUniformLocation(mc3Shader.programID, "edgeTex");
+
 
 	// MC pass 4 shader
 	//
@@ -90,13 +92,13 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, _dm->voxelRes, _dm->voxelRes, _dm->voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, _ot->voxelData);
 
 	//FIRST PASS - march all voxels and output those that needed tris to
-	// VBO "nonEmptyCellsBuffer" ---------------------------------------------------------------
+	// VBO "nonEmptyCellsBuffer" =======================================================================================
 	glUseProgram(mc1Shader.programID);
 
 	// send uniforms
-	glUniform3fv(octantPos1, 1, &_ot->pos[0]);
-	glUniform1i(volumeTex1, 0);
-	glUniform1i(triTable1, 1);
+	glUniform3fv(uID_octantPos1, 1, &_ot->pos[0]);
+	glUniform1i(uID_volumeTex1, 0);
+	glUniform1i(uID_triTable1, 1);
 	//glUniform1i(edgeTable, 2);
 
 	//start rendering with transform feedback
@@ -118,39 +120,42 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glDisable(GL_RASTERIZER_DISCARD);
 
 	//glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, 0);
-
-	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
-	GLuint nprimitives;
-	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);
-	_dm->nrofVerts = nprimitives;
-
-	GLfloat feedback[5000];
-	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
-	for (int i = 0; i < 3*6*3; i = i + 3 ) {
-		std::cout << feedback[i] << ", " <<
-			feedback[i + 1] << ", " <<
-			feedback[i + 2] << ", " << std::endl;
-			if (i % 9 == 0)
-				std::cout <<  "----------" << std::endl;
-		
-	}
 	
+	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+
+	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<															  //<<
+	GLuint nprimitives;																								  //<<
+	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);															//<<
+	_dm->nrofVerts = nprimitives;																						//<<
+																														//<<
+	GLfloat feedback[5000];
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);										//<<
+	for (int i = 0; i < 3*6*3; i = i + 3 ) {																				//<<
+		std::cout << feedback[i] << ", " <<																				//<<
+			feedback[i + 1] << ", " <<																					//<<
+			feedback[i + 2] << ", " << std::endl;																	   //<<
+			if (i % 9 == 0)																							   //<<
+				std::cout <<  "----------" << std::endl;															   //<<
+																													   //<<
+	}																												   //<<
+	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+
 	//SECOND PASS - march voxels that needed tris and output edges that needed verts to
-	// texture "nonEmptyEdgesBuffer" ---------------------------------------------------------------
+	// texture "nonEmptyEdgesBuffer" =======================================================================================
 	glUseProgram(mc2Shader.programID);
 
 	// bind textures
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, _dm->edgeTableTex);
-	// send scalar field as 3D texture to the GPU ---------------------
-
 
 	// send uniforms
-	glUniform3fv(octantPos2, 1, &_ot->pos[0]);
-	glUniform1i(volumeTex2, 0);
-	glUniform1i(triTable2, 1);
-	glUniform1i(edgeTable2, 2);
+	glUniform3fv(uID_octantPos2, 1, &_ot->pos[0]);
+	glUniform1i(uID_volumeTex2, 0);
+	glUniform1i(uID_triTable2, 1);
+	glUniform1i(uID_edgeTable2, 2);
 
+	//set viewport and bind fbo
 	glViewport(0, 0, 32, 32);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _dm->tmpFbo);
 	//glClear(GL_DEPTH_BUFFER_BIT);
@@ -158,14 +163,64 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glBindVertexArray(_dm->nonEmptyCellsArray);
 	//TODO: determine number of points to draw properly
 	glDrawArrays(GL_POINTS, 0, nprimitives);
-	
-	GLint pixels1[32 * 32 * 32];
-	GLubyte pixels[32*32*32*4];
-	
-	glBindTexture(GL_TEXTURE_3D, _dm->edgeTex);
-	glGetTexImage(GL_TEXTURE_3D, 0, GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]);
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+	//THIRD PASS - march voxels that needed tris and use the texture containing info about
+	//which edges that need verts to calc these verts.
+	//=======================================================================================
+	glUseProgram(mc3Shader.programID);
+
+	// bind textures
+	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_3D, _dm->edgeTex);
+	GLubyte pixels[32 * 32 * 32 * 3];
+	glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_UNSIGNED_BYTE, &pixels[0]);
+	
+
+	// send uniforms
+	glUniform3fv(uID_octantPos3, 1, &_ot->pos[0]);
+	glUniform1i(uID_volumeTex3, 0);
+	glUniform1i(uID_edgeTex3, 3);
+
+	//start rendering with transform feedback
+	glBindBufferBase(GL_TRANSFORM_FEEDBACK_BUFFER, 0, _dm->vertexbuffer);
+
+	glBeginQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN, qid);
+
+	glEnable(GL_RASTERIZER_DISCARD);
+	glBeginTransformFeedback(GL_POINTS);
+	glDrawArrays(GL_POINTS, 0, nprimitives);
+	glEndTransformFeedback();
+	glDisable(GL_RASTERIZER_DISCARD);
+
+	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
+
+	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<														  //<<
+	GLuint nprimitives1;																								  //<<
+	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives1);															//<<
+	_dm->nrofVerts = nprimitives1;																						//<<
+	//<<
+	GLfloat feedback1[5000];
+	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback1), feedback1);										//<<
+	for (int i = 0; i < 3 * 6 * 3; i = i + 3) {																				//<<
+		std::cout << feedback1[i] << ", " <<																				//<<
+			feedback1[i + 1] << ", " <<																					//<<
+			feedback1[i + 2] << ", " << std::endl;																	   //<<
+		if (i % 9 == 0)																							   //<<
+			std::cout << "----------" << std::endl;															   //<<
+		//<<
+	}																												   //<<
+	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+	//FOURTH PASS ============================================================================
+
+
+	//FIFTH PASS =============================================================================
+
+
+	//Generation complete =====================================================================
+
 	glViewport(0, 0, 1920, 1080);
 
 	glBindVertexArray(0);

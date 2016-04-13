@@ -5,11 +5,10 @@ uniform vec3 octantPos;
 
 const uint dim = 32;
 
+out int vertexID;
+
 void main () {
 
-
-
-	vec3 vertexPosition = VertexPosition;
-
-	gl_Position = vec4(vertexPosition , 1.0f);
+	vertexID = gl_VertexID;
+	gl_Position = vec4(VertexPosition , 1.0f);
 }

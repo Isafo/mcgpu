@@ -12,8 +12,6 @@ out vec3 vertexPosition;
 
 const float stepLength = 0.5f;
 const uint dim = 32;
-vec3 scale;
-
 
 void main() {
 	// get the position of the scalarvalues in the 3Dtexture
@@ -28,7 +26,7 @@ void main() {
 	xyz[6] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, stepLength );
 	xyz[7] = gl_in[0].gl_Position.xyz + vec3(-stepLength, stepLength, stepLength );
 	
-	scale = 1.0 / vec3(dim, dim, dim);
+	vec3 scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
 	// get the scalar values from the 3D texture
@@ -59,8 +57,6 @@ void main() {
 		vertexPosition = gl_in[0].gl_Position.xyz;
 		gl_Position = vec4(vertexPosition, 1.0);
 		EmitVertex();
-
-		EndPrimitive();
 	}
 		
 }

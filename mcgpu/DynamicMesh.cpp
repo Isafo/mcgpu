@@ -85,7 +85,7 @@ void DynamicMesh::createBuffers() {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	
-	//transform feedback buffers ------------------------------------------------------
+	//transform feedback buffers =====================================================
 
 	//non empty cells buffer ---------------------------------------------------------- 
 
@@ -105,17 +105,6 @@ void DynamicMesh::createBuffers() {
 	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	//non empty edges buffer --------------------------------------------------------
-
-	//
-	//
-	//
-	//
-	// something...
-	//
-	//
-	//
-	//
 
 	// final VAO, VBO and IBO objects ------------------------------------------------
 
@@ -517,7 +506,7 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA, voxelRes, voxelRes, voxelRes, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, voxelRes, voxelRes, voxelRes, 0, GL_RGB, GL_UNSIGNED_BYTE, 0);
 
 	glGenFramebuffers(1, &tmpFbo);
 	glBindFramebuffer(GL_FRAMEBUFFER, tmpFbo);

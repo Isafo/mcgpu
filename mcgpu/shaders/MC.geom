@@ -13,7 +13,6 @@ out vec3 vertexNormal;
 
 const float stepLength = 0.5f;
 const uint dim = 256;
-vec3 scale;
 
 vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {
 	float dVal = (isoValue - firstI) / (secondI - firstI);
@@ -34,7 +33,7 @@ void main() {
 	xyz[6] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, stepLength );
 	xyz[7] = gl_in[0].gl_Position.xyz + vec3(-stepLength, stepLength, stepLength );
 
-	scale = 1.0 / vec3(dim, dim, dim);
+	vec3 scale = 1.0 / vec3(dim, dim, dim);
 
 	float scalarValue[8];
 	// get the scalar values from the 3D texture

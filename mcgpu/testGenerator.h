@@ -20,17 +20,21 @@ private:
 	GLint octantPos;
 
 	Shader mc1Shader;
-	GLint volumeTex1;
-	GLint triTable1;
-	GLint octantPos1;
+	GLint uID_volumeTex1;
+	GLint uID_triTable1;
+	GLint uID_octantPos1;
 
 	Shader mc2Shader;
-	GLint volumeTex2;
-	GLint triTable2;
-	GLint edgeTable2;
-	GLint octantPos2;
+	GLint uID_volumeTex2;
+	GLint uID_triTable2;
+	GLint uID_edgeTable2;
+	GLint uID_octantPos2;
 
 	Shader mc3Shader;
+	GLint uID_volumeTex3;
+	GLint uID_octantPos3;
+	GLint uID_edgeTex3;
+
 	Shader mc4Shader;
 	Shader mc5Shader;
 

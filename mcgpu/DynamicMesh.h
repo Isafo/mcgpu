@@ -47,7 +47,6 @@ class DynamicMesh : public Mesh{
 	GLuint nonEmptyCellsBuffer;
 	GLuint nonEmptyCellsArray;
 	
-	GLuint nonEmptyEdgesBuffer;
   private:
 
 	  //TODO: remove one zero
