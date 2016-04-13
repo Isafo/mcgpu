@@ -12,7 +12,7 @@ out vec3 vertexPosition;
 out vec3 vertexNormal;
 
 const float stepLength = 0.5f;
-const uint dim = 256;
+const uint dim = 32;
 vec3 scale;
 
 vec3 lerp(vec3 first, vec3 second, float firstI, float secondI) {

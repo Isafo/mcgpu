@@ -8,9 +8,6 @@ out float scalarValue;
 const int dim = 32;
 
 void main() {
-
-
-
 	// calculate the scalarvalue
 	/*
 	if (gl_in[0].gl_Position.y < (dim / 2) + sin(100.0f * float(gl_in[0].gl_Position.x / dim)) + sin( 100.0f * float(gl_InvocationID / dim)) || 
@@ -20,7 +17,7 @@ void main() {
 		scalarValue = 0;
 	*/
 
-	if (gl_in[0].gl_Position.y <= 24)
+	if (gl_in[0].gl_Position.y <= 12)
 		scalarValue = 1; // nomalized scalarvalue
 	else
 		scalarValue = 0;

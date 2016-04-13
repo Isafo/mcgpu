@@ -22,32 +22,6 @@ testGenerator::~testGenerator(){
 void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 
 	//Generate scalar field ---------------------------------------
-
-	//_ot->voxelData = new unsigned char[_dm->voxelRes*_dm->voxelRes*_dm->voxelRes];
-
-
-	//for (int x = 0; x < _dm->voxelRes; ++x){
-	//	for (int y = 0; y < _dm->voxelRes; ++y){
-	//		for (int z = 0; z < _dm->voxelRes; ++z){
-	//			/*if ((x > _dm->voxelRes / 4 && x < (_dm->voxelRes * 3) / 4) && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
-	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
-	//			else
-	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
-	//			
-	//			if (x == _dm->voxelRes / 4 && y % 4 == 0 && (y > _dm->voxelRes / 4 && y < (_dm->voxelRes * 3) / 4) && (z > _dm->voxelRes / 4 && z < (_dm->voxelRes * 3) / 4))
-	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;*/
-
-	//			if (y < (_dm->voxelRes / 2) + sin(100.0f*static_cast<float>(x) / _dm->voxelRes) + sin(100.0f*static_cast<float>(z) / _dm->voxelRes) || 
-	//				( (x % 6)  == 0 && (z % 6)  == 0 && y < (_dm->voxelRes / 2) + 10 ))
-	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 255;
-	//			else
-	//				_ot->voxelData[x + _dm->voxelRes*(y + _dm->voxelRes*z)] = 0;
-	//		}
-	//	}
-	//}
-	
-	// generate the scalarfield -------------------------------------------------------------
-	
 	glUseProgram(scalarGen.programID);
 	
 	glViewport(0, 0, 32, 32);
