@@ -1,10 +1,10 @@
 #version 450
 
-in int vertexID;
+in int vID;
 
-out vec4 frag_color;
+out int frag_color;
 
 void main() {
 
-  frag_color = vec4(vec3(vertexID), 1.0);
+  frag_color = vID;
 }
