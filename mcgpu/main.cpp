@@ -1,4 +1,4 @@
-#include "GLew\glew.h"
+#include "GL/glew.h"
 
 #include "glfwContext.h"
 #include "Shader.h"
@@ -14,7 +14,7 @@
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> //glm::make:mat4
-#include <glm\gtx\rotate_vector.hpp> // rotate vector
+#include <glm/gtx/rotate_vector.hpp> // rotate vector
 
 #include <iostream>
 

@@ -62,15 +62,21 @@ void DynamicMesh::createBuffers() {
 	// Activate the vertex buffer
 	glBindBuffer(GL_ARRAY_BUFFER, singlePointvertexbuffer);
 	// Present our vertex coordinates to OpenGL
+	
+	// TODO: copy the data directly when the buffer is reated insted of creating a empty and then mapping it
 	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat), fVertexP, GL_STREAM_DRAW);
 
 	fVertexP = (float*)glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * 3,
 		GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-
+	
 	fVertexP[0] = 0.0f;
 	fVertexP[1] = 0.0f;
 	fVertexP[2] = 0.0f;
+	
 	glUnmapBuffer(GL_ARRAY_BUFFER);
+
+	delete[] fVertexP;
 
 	// Specify how many attribute arrays we have in our VAO
 	glEnableVertexAttribArray(0); // Vertex coordinates

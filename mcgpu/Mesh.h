@@ -1,5 +1,5 @@
 #pragma once
-#include "GLew/glew.h"
+#include "GL/glew.h"
 #include <iomanip>
 
 #include <glm/vec3.hpp> // glm::vec3

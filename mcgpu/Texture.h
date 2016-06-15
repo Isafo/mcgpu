@@ -1,4 +1,4 @@
-#include "GLew/glew.h"
+#include "GL/glew.h"
 
 class Texture {
 public:

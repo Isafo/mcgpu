@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "GLew/glew.h"
+#include "GL/glew.h"
 #include <glm/mat4x4.hpp> // glm::mat4
 
 // A linked list implementing a matrix stack
