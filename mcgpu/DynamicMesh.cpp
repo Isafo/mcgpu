@@ -49,7 +49,7 @@ void DynamicMesh::createBuffers() {
 	triangle* indexP;
 	dBufferData * vertexP;
 
-	float* fVertexP;
+	float fVertexP[3];
 
 	//single point vao -------------------------------------------------------------
 
@@ -63,20 +63,10 @@ void DynamicMesh::createBuffers() {
 	glBindBuffer(GL_ARRAY_BUFFER, singlePointvertexbuffer);
 	// Present our vertex coordinates to OpenGL
 	
-	// TODO: copy the data directly when the buffer is reated insted of creating a empty and then mapping it
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat), NULL, GL_STREAM_DRAW);
-	//glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat), fVertexP, GL_STREAM_DRAW);
-
-	fVertexP = (float*)glMapBufferRange(GL_ARRAY_BUFFER, 0, sizeof(GLfloat) * 3,
-		GL_MAP_WRITE_BIT | GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_UNSYNCHRONIZED_BIT);
-	
 	fVertexP[0] = 0.0f;
 	fVertexP[1] = 0.0f;
 	fVertexP[2] = 0.0f;
-	
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-
-	delete[] fVertexP;
+	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(GLfloat), fVertexP, GL_STREAM_DRAW);
 
 	// Specify how many attribute arrays we have in our VAO
 	glEnableVertexAttribArray(0); // Vertex coordinates
@@ -489,7 +479,7 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 16, 256, 0, GL_ALPHA_INTEGER, GL_INT, triTable);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, 16, 256, 0, GL_RED, GL_INT, triTable);
 
 	glActiveTexture(GL_TEXTURE2);
 	glGenTextures(1, &edgeTableTex);
@@ -499,7 +489,7 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA16I_EXT, 1, 256, 0, GL_ALPHA_INTEGER, GL_INT, edgeTable);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, 1, 256, 0, GL_RED, GL_INT, edgeTable);
 
 
 	glEnable(GL_TEXTURE_3D);

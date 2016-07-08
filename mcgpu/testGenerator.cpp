@@ -25,8 +25,8 @@ testGenerator::testGenerator()
 	uID_volumeTex2 = glGetUniformLocation(mc2Shader.programID, "scalarField");
 	uID_triTable2 = glGetUniformLocation(mc2Shader.programID, "triTable");
 	uID_edgeTable2 = glGetUniformLocation(mc2Shader.programID, "edgeTable");
-	uID_octantPos2 = glGetUniformLocation(mc1Shader.programID, "octantPos");
-	// MC pass 3 shader
+	uID_octantPos2 = glGetUniformLocation(mc2Shader.programID, "octantPos");
+	//// MC pass 3 shader
 	mc3Shader.createShader("shaders/MC3.vert", "shaders/MC3.frag", "shaders/MC3.geom", "vertexPosition", "vertexNormal");
 	uID_volumeTex3 = glGetUniformLocation(mc3Shader.programID, "scalarField");
 	uID_octantPos3 = glGetUniformLocation(mc3Shader.programID, "octantPos");
@@ -166,9 +166,9 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 
-	//THIRD PASS - march voxels that needed tris and use the texture containing info about
-	//which edges that need verts to calc these verts.
-	//=======================================================================================
+	////THIRD PASS - march voxels that needed tris and use the texture containing info about
+	////which edges that need verts to calc these verts.
+	////=======================================================================================
 	glUseProgram(mc3Shader.programID);
 
 	// bind textures
@@ -177,7 +177,6 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	GLubyte pixels[32 * 32 * 32 * 3];
 	glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_UNSIGNED_BYTE, &pixels[0]);
 	
-
 	// send uniforms
 	glUniform3fv(uID_octantPos3, 1, &_ot->pos[0]);
 	glUniform1i(uID_volumeTex3, 0);

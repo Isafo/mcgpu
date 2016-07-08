@@ -24,6 +24,10 @@ void glfwContext::init(int _w, int _h, const char* _wName)
 		std::cout << "ERROR: could not start GLFW3" << std::endl;
 		return;
 	}
+
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	
 	window.resize(1);
 	monitor.resize(1);

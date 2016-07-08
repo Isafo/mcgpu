@@ -61,10 +61,6 @@ void main () {
 	float edge2 = texture(edgeTex, VertexPosition * scale).g;
 	float edge3 = texture(edgeTex, VertexPosition * scale).b;
 
-	//vert1 = vec4(edge1);
-	//vert2 = vec4(edge2);
-	//vert3 = vec4(edge3);
-
 	// Calculate the position if the edge contains a vertex
 	if (edge1 != 0.0){
 		vert1 = vec4(lerp(xyz[5], xyz[6], scalarValue[5], scalarValue[6]), 1.0);

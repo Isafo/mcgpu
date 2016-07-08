@@ -29,8 +29,7 @@ int main(){
 	glfwContext glfw;
 	GLFWwindow* currentWindow = nullptr;
 
-	//glfw.init(640, 480, "mCity");
-	glfw.init(1920, 1080, "mCity");
+	glfw.init(1920, 1080, "MC");
 	glfw.getCurrentWindow(currentWindow);
 	glfwSetCursorPos(currentWindow, 960, 540);
 

@@ -1,4 +1,5 @@
 #version 450
+
 layout(points) in;
 layout(points) out;
 layout(max_vertices = 1) out;
@@ -55,13 +56,13 @@ void main() {
 	
 	int edgeIndex = texelFetch(edgeTable, ivec2(0, cubeIndex), 0).a;
 	neededEdges = vec3(0.0, 0.0, 0.0);
-	if( edgeIndex & 32 ) {
+	if( (edgeIndex & 32) == 32) {
 		neededEdges.x = 1.0;
 	}
-	if( edgeIndex & 64 ) {
-		neededEdges.y = 1 .0;
+	if( (edgeIndex & 64) == 64) {
+		neededEdges.y = 1.0;
 	}
-	if( edgeIndex & 1024 ) {
+	if( (edgeIndex & 1024) == 1024) {
 		neededEdges.z = 1.0;
 	}
 
