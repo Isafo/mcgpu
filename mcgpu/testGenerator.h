@@ -36,9 +36,14 @@ private:
 	GLint uID_edgeTex3;
 
 	Shader mc4Shader;
+	GLint uID_neededEdges;
+	GLint uID_octantPos4;
+
 	Shader mc5Shader;
-
-
+	GLint uID_volumeTex5;
+	GLint uID_triTable5;
+	GLint uID_vertIndices5;
+	GLint uID_octantPos5;
 
 };
 

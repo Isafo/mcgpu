@@ -154,14 +154,14 @@ void GLcalls()
 	glClearColor(0.01f, 0.01f, 0.01f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	//glEnable(GL_FRAMEBUFFER_SRGB);
 	//glEnable(GL_FLAT);
 	//glShadeModel(GL_FLAT);
-	glCullFace(GL_BACK);
+	//glCullFace(GL_BACK);
 	//glDisable(GL_TEXTURE);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glFrontFace(GL_CCW);

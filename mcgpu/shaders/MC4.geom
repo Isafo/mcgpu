@@ -8,7 +8,7 @@ const uint dim = 32;
 uniform sampler3D neededEdges;
 
 in int vertexID[];
-out int vID;
+flat out int vID;
 
 void main() {
 
@@ -24,7 +24,7 @@ void main() {
 	vec3 texCoord = vec3((xyz/dim)*2 - vec3(1.0, 1.0, 1.0));
 	//vec3 edges = texture3D(neededEdges, texCoord);
 
-	vec diff = xyz - gl_in[0].gl_Position.xyz;
+	vec3 diff = xyz - gl_in[0].gl_Position.xyz;
 
 	// if edge 5 diff.z != 0
 	if(diff.z != 0) 

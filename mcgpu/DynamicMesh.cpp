@@ -514,7 +514,10 @@ void DynamicMesh::genTableTex() {
 
 void DynamicMesh::render() {
 	glBindVertexArray(vao);
-	glDrawArrays(GL_TRIANGLES, 0, MAX_NR_OF_TRIANGLES);
+	glDrawArrays(GL_TRIANGLES, 0, 5000);
+	//TODO: look at glDrawTransformFeedback
+
+	//glDrawArrays(GL_TRIANGLES, 0, MAX_NR_OF_TRIANGLES);
 	//glDrawElements(GL_TRIANGLES, 1000 * sizeof(triangle), GL_UNSIGNED_INT, (void*)0);
 	// (mode, vertex uN, type, element array buffer offset)
 	glBindVertexArray(0);

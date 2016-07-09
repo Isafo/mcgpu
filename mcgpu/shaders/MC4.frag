@@ -1,6 +1,6 @@
 #version 450
 
-in int vID;
+flat in int vID;
 
 out int frag_color;
 

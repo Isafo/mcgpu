@@ -32,16 +32,17 @@ testGenerator::testGenerator()
 	uID_octantPos3 = glGetUniformLocation(mc3Shader.programID, "octantPos");
 	uID_edgeTex3 = glGetUniformLocation(mc3Shader.programID, "edgeTex");
 
-
 	// MC pass 4 shader
-	//
-	//something...
-	//
+	mc4Shader.createShader("shaders/MC4.vert", "shaders/MC4.frag", "shaders/MC4.geom");
+	uID_neededEdges = glGetUniformLocation(mc4Shader.programID, "neededEdges");
+	uID_octantPos4 = glGetUniformLocation(mc4Shader.programID, "octantPos");
 
 	// MC pass 5 shader
-	//
-	//something...
-	//
+	mc5Shader.createShader("shaders/MC5.vert", "shaders/MC5.frag", "shaders/MC5.geom", "index");
+	uID_volumeTex5 = glGetUniformLocation(mc4Shader.programID, "scalarField");
+	uID_triTable5 = glGetUniformLocation(mc1Shader.programID, "triTable");
+	uID_vertIndices5 = glGetUniformLocation(mc1Shader.programID, "vIndices");
+	uID_octantPos5 = glGetUniformLocation(mc4Shader.programID, "octantPos");
 
 }
 
@@ -162,6 +163,7 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 
 	glBindVertexArray(_dm->nonEmptyCellsArray);
 	//TODO: determine number of points to draw properly
+	//TODO: look at creating a TFO and using glDrawTransformFeedback
 	glDrawArrays(GL_POINTS, 0, nprimitives);
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -196,20 +198,20 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
 
 	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<														  //<<
-	GLuint nprimitives1;																								  //<<
-	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives1);															//<<
-	_dm->nrofVerts = nprimitives1;																						//<<
-	//<<
-	GLfloat feedback1[5000];
+	GLuint nprimitives1;																									//<<
+	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives1);																//<<
+	_dm->nrofVerts = nprimitives1;																							//<<
+																															//<<
+	GLfloat feedback1[5000];																								//<<
 	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback1), feedback1);										//<<
 	for (int i = 0; i < 3 * 6 * 3; i = i + 3) {																				//<<
 		std::cout << feedback1[i] << ", " <<																				//<<
-			feedback1[i + 1] << ", " <<																					//<<
-			feedback1[i + 2] << ", " << std::endl;																	   //<<
-		if (i % 9 == 0)																							   //<<
-			std::cout << "----------" << std::endl;															   //<<
-		//<<
-	}																												   //<<
+			feedback1[i + 1] << ", " <<																						//<<
+			feedback1[i + 2] << ", " << std::endl;																			//<<
+		if (i % 9 == 0)																										//<<
+			std::cout << "----------" << std::endl;																			//<<
+																															//<<
+	}																														//<<
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	//FOURTH PASS ============================================================================
