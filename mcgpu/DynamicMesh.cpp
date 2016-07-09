@@ -460,8 +460,14 @@ void DynamicMesh::genTableTex() {
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_BORDER);
-	//glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, voxelRes, voxelRes, voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, voxelData);
-	//glBindTexture(NULL, 0);
+	glTexImage3D(GL_TEXTURE_3D, 0, GL_RED, voxelRes, voxelRes, voxelRes, 0, GL_RED, GL_UNSIGNED_BYTE, 0);
+	glBindTexture(NULL, 0);
+
+	// generate temporary FBO for drawing to 3Dtextures
+	glGenFramebuffers(1, &tmpFbo);
+	glBindFramebuffer(GL_FRAMEBUFFER, tmpFbo);
+	glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, voxelTex, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 }
 

@@ -15,6 +15,7 @@ private:
 	std::vector<octantStackElement> octantStack;
 
 	Shader mcShader;
+	Shader scalarGen;
 
 	//GLint locationDims;
 	//GLint locationVposition;

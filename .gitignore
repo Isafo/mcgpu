@@ -264,3 +264,5 @@ lib/
 
 # RC files
 *.rc
+
+*.VC.opendb
