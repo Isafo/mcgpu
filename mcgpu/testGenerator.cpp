@@ -124,7 +124,8 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	
 	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
 
-	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<															  //<<
+	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//<<
+	std::cout << "first pass ========================" << std::endl;													//<<
 	GLuint nprimitives;																								  //<<
 	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);															//<<
 	_dm->nrofVerts = nprimitives;																						//<<
@@ -159,14 +160,34 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	//set viewport and bind fbo
 	glViewport(0, 0, 32, 32);
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _dm->tmpFbo);
-	//glClear(GL_DEPTH_BUFFER_BIT);
+	GLfloat cl[] = { 0.0, 0.0, 0.0, 0.0 };
+	glClearBufferfv(GL_COLOR, GL_DRAW_BUFFER0, cl);
 
 	glBindVertexArray(_dm->nonEmptyCellsArray);
 	//TODO: determine number of points to draw properly
 	//TODO: look at creating a TFO and using glDrawTransformFeedback
 	glDrawArrays(GL_POINTS, 0, nprimitives);
 
+	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//<<
+	std::cout << "second pass ========================" << std::endl;													//<<
+	GLint pixelData[32 * 32 * 32 * 3];
+	pixelData[0] = 0;
+	glBindTexture(GL_TEXTURE_3D, _dm->edgeTex);
+	glGetTexImage(GL_TEXTURE_3D, 0, GL_RGB, GL_INT, pixelData);
+
+	for (int i = 0; i < 3 * 32 * 32 * 32; i = i + 3) {																				//<<
+		std::cout << pixelData[i] << ", " <<																				//<<
+			pixelData[i + 1] << ", " <<																						//<<
+			pixelData[i + 2] << ", " << std::endl;																			//<<
+		if (i % 9 == 0)																										//<<
+			std::cout << "----------" << std::endl;																			//<<
+																															//<<
+	}//<<
+	glBindTexture(GL_TEXTURE_3D, 0);
+	 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	
 
 	////THIRD PASS - march voxels that needed tris and use the texture containing info about
 	////which edges that need verts to calc these verts.
@@ -197,7 +218,8 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 
 	glEndQuery(GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN);
 
-	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<														  //<<
+	// debug code <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<//<<
+	std::cout << "third pass ========================" << std::endl;													//<<
 	GLuint nprimitives1;																									//<<
 	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives1);																//<<
 	_dm->nrofVerts = nprimitives1;																							//<<

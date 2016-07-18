@@ -55,7 +55,7 @@ void main() {
 	cubeIndex += int(scalarValue[7] >= isoValue) * 128;
 	
 	int edgeIndex = texelFetch(edgeTable, ivec2(0, cubeIndex), 0).a;
-	neededEdges = vec3(0.0, 0.0, 0.0);
+	neededEdges = vec3(1.0, 1.0, 1.0);
 	if( (edgeIndex & 32) == 32) {
 		neededEdges.x = 1.0;
 	}
@@ -66,9 +66,9 @@ void main() {
 		neededEdges.z = 1.0;
 	}
 
-	gl_PointSize = 1;
+	gl_PointSize = 1.0;
 	gl_Layer = int(gl_in[0].gl_Position.z);
-	gl_Position = vec4((gl_in[0].gl_Position.xy/dim)*2 - vec2(1,1), 0, 1);
+	gl_Position = vec4((gl_in[0].gl_Position.xy / dim) * 2 - vec2(1,1), 0, 1);
 	EmitVertex();
-
+	EndPrimitive();
 }
