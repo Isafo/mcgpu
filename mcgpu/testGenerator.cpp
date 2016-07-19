@@ -37,11 +37,6 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 
 	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	glViewport(0, 0, 1920, 1080);
-
-	// generate marching cubes on the GPU ------------------------------
-	// bind mcShader
-	
-
 	
 	// generate marching cubes on the GPU ------------------------------
 	// bind mcShader
