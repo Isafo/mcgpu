@@ -49,8 +49,8 @@ public:
 	Octant* parent;
 	int depth;
 
-	unsigned int vBufferIndex;
-	unsigned int tBufferIndex;
+	// index to the octants buffer
+	unsigned int bufferIndex;
 	unsigned char* voxelData;
 
 private:

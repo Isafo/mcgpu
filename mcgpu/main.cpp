@@ -64,20 +64,28 @@ int main(){
 	glm::vec4 LP = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);// glm::vec4(lightOne.getPosition()[0], lightOne.getPosition()[1], lightOne.getPosition()[2], 1.0f);
 	glm::mat4 lightT = glm::mat4(1.0f);
 
-	Octant Octree;
+	Octant octree;
+	octree.bufferIndex = 0;
+	octree.halfDim = 50.0f;
+
+	Octant octree1;
+	octree1.bufferIndex = 1;
+	octree1.halfDim = 50.0f;
+	octree1.pos = glm::vec3(50.0f, 0.0f, 0.0f);
+
 	testGenerator firstTest;
 	DynamicMesh firstMesh;
 	firstMesh.createBuffers();
 	firstMesh.genTableTex();
-	firstTest.generate(&Octree, &firstMesh);
+	firstTest.generate(&octree, &firstMesh);
+	firstTest.generate(&octree1, &firstMesh);
 	firstMesh.setPosition(&glm::vec3(0.0f, -25.0f, 0.0f));
 
 	Camera mCamera;
 	mCamera.setPosition(&glm::vec3(0.0f, 0.0f, 0.0f));
 	mCamera.update();
 
-
-	double lastTime = glfwGetTime() - 0.001;
+	double lastTime = glfwGetTime() - 0.001f;
 	double dT = 0.0;
 	while (!glfwWindowShouldClose(currentWindow))
 	{
@@ -119,10 +127,9 @@ int main(){
 				//MVstack.multiply(testSphere1.getTransformM());
 				MVstack.multiply(firstMesh.getOrientation());
 				MVstack.translate(firstMesh.getPosition());
-				MVstack.scale(25.0f);
+				MVstack.scale(50.0f);
 
 				glUniformMatrix4fv(locationMV, 1, GL_FALSE, MVstack.getCurrentMatrix());
-				//glBindTexture(GL_TEXTURE_2D, greyTex.getTextureID());
 				firstMesh.render();
 			MVstack.pop(); //mesh transforms >--
 			MVstack.push();//Plane transforms --<

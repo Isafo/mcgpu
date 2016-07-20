@@ -43,6 +43,11 @@ class DynamicMesh : public Mesh{
 
 	GLuint tmpFbo;
 
+	//GLuint vao; // Vertex array object, the main handle for geometry
+	GLuint vaos[2];
+	GLuint vertexbuffers[2]; // Buffer ID to bind to GL_ARRAY_BUFFER
+	GLuint indexbuffers[2];  // Buffer ID to bind to GL_ELEMENT_ARRAY_BUFFER
+
   private:
 
 	  //TODO: remove one zero

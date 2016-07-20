@@ -3,6 +3,8 @@ layout(points) in;
 layout(points, max_vertices = 1) out;
 layout(invocations = 32) in; // run 32 instances for all slices in the 3D texture
 
+in vec3 offsetPos[];
+
 //
 // Description : Array and textureless GLSL 2D simplex noise function.
 //      Author : Ian McEwan, Ashima Arts.
@@ -91,7 +93,7 @@ void main() {
 	else
 		scalarValue = 0.0;*/
 
-	float test = snoise(vec2(float(gl_in[0].gl_Position.x) / float(dim), float(gl_InvocationID) / float(dim)));
+	float test = snoise(vec2(float(gl_in[0].gl_Position.x + offsetPos[0].x) / float(dim), float(gl_InvocationID + offsetPos[0].z) / float(dim)));
 
 	if (gl_in[0].gl_Position.y < (dim / 2) + sin(10.0f * test.x) * 2.0)
 		scalarValue = 1.0;
