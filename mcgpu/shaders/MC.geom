@@ -33,24 +33,6 @@ void main() {
 	xyz[5] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, -stepLength );
 	xyz[6] = gl_in[0].gl_Position.xyz + vec3(stepLength, stepLength, stepLength );
 	xyz[7] = gl_in[0].gl_Position.xyz + vec3(-stepLength, stepLength, stepLength );
-	
-	/* //DEGUG	
-	vertexPosition = gl_in[0].gl_Position.xyz;
-	vertexNormal = vec3(1,1,1);
-	gl_Position = vec4(vertexPosition, 1.0);
-	EmitVertex();
-		
-	vertexPosition = gl_in[0].gl_Position.xyz;
-	vertexNormal = vec3(1,1,1);
-	gl_Position = vec4(vertexPosition, 1.0);
-	EmitVertex();
-		
-	vertexPosition = gl_in[0].gl_Position.xyz;
-	vertexNormal = vec3(1,1,1);
-	gl_Position = vec4(vertexPosition, 1.0);
-	EmitVertex();
-	EndPrimitive();
-	*/
 
 	scale = 1.0 / vec3(dim, dim, dim);
 

@@ -83,16 +83,16 @@ void testGenerator::generate(Octant* _ot, DynamicMesh* _dm){
 	glGetQueryObjectuiv(qid, GL_QUERY_RESULT, &nprimitives);
 	_dm->nrofVerts = nprimitives;
 
-	GLfloat feedback[5000];
-	glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
-	for (int i = 0; i < 3*6*3; i = i + 3 ) {
-		std::cout << feedback[i] << ", " <<
-			feedback[i + 1] << ", " <<
-			feedback[i + 2] << ", " << std::endl;
-			if (i % 9 == 0)
-				std::cout <<  "----------" << std::endl;
-		
-	}
+	// DEBUG
+	//GLfloat feedback[5000];
+	//glGetBufferSubData(GL_TRANSFORM_FEEDBACK_BUFFER, 0, sizeof(feedback), feedback);
+	//for (int i = 0; i < 3*6*3; i = i + 3 ) {
+	//	std::cout << feedback[i] << ", " <<
+	//		feedback[i + 1] << ", " <<
+	//		feedback[i + 2] << ", " << std::endl;
+	//		if (i % 9 == 0)
+	//			std::cout <<  "----------" << std::endl;
+	//}
 	
 	glBindVertexArray(0);
 
