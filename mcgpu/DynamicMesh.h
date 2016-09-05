@@ -1,5 +1,5 @@
 #pragma once
-#include "GLew/glew.h"
+#include "GL/glew.h"
 #include "Mesh.h"
 #include "Octant.h"
 
